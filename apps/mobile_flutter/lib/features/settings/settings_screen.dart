@@ -110,23 +110,25 @@ class SettingsScreen extends StatelessWidget {
                       title: 'Gentle nudges',
                       subtitle: 'Only inside your waking hours',
                       value: policy.enabled,
-                      onChanged: (v) =>
-                          set.setPolicy(policy.copyWith(enabled: v)),
+                      onChanged:
+                          (v) => set.setPolicy(policy.copyWith(enabled: v)),
                       divider: true,
                     ),
                     _StepRow(
                       title: 'Daily nudge limit',
                       value: '${policy.dailyCap} a day',
-                      onMinus: () => set.setPolicy(
-                        policy.copyWith(
-                          dailyCap: (policy.dailyCap - 1).clamp(0, 12),
-                        ),
-                      ),
-                      onPlus: () => set.setPolicy(
-                        policy.copyWith(
-                          dailyCap: (policy.dailyCap + 1).clamp(0, 12),
-                        ),
-                      ),
+                      onMinus:
+                          () => set.setPolicy(
+                            policy.copyWith(
+                              dailyCap: (policy.dailyCap - 1).clamp(0, 12),
+                            ),
+                          ),
+                      onPlus:
+                          () => set.setPolicy(
+                            policy.copyWith(
+                              dailyCap: (policy.dailyCap + 1).clamp(0, 12),
+                            ),
+                          ),
                     ),
                     _InfoRow(
                       title: 'Quiet hours',
@@ -139,11 +141,13 @@ class SettingsScreen extends StatelessWidget {
                     ),
                     _SwitchRow(
                       title: 'A clinician manages my fluids',
-                      subtitle: 'Turns off generic nudges. Follow your clinician\'s plan.',
+                      subtitle:
+                          'Turns off generic nudges. Follow your clinician\'s plan.',
                       value: policy.followsClinicianPlan,
-                      onChanged: (v) => set.setPolicy(
-                        policy.copyWith(followsClinicianPlan: v),
-                      ),
+                      onChanged:
+                          (v) => set.setPolicy(
+                            policy.copyWith(followsClinicianPlan: v),
+                          ),
                       divider: true,
                     ),
                   ],
@@ -173,7 +177,8 @@ class SettingsScreen extends StatelessWidget {
                     ),
                     const _Feature(
                       icon: Icons.timelapse_rounded,
-                      text: 'Wind-down countdown on the Lock Screen and Dynamic Island',
+                      text:
+                          'Wind-down countdown on the Lock Screen and Dynamic Island',
                     ),
                     const _Feature(
                       icon: Icons.watch_outlined,
@@ -208,15 +213,14 @@ class SettingsScreen extends StatelessWidget {
                           DateTime(2000),
                           DateTime(2100),
                         );
-                        final json = const JsonEncoder.withIndent('  ').convert(
-                          <String, Object?>{
-                            'exported_at': DateTime.now()
-                                .toUtc()
-                                .toIso8601String(),
-                            'drink_logs': logs.map((l) => l.toJson()).toList(),
-                            'sleep_schedule': s.sleep.schedule.toJson(),
-                          },
-                        );
+                        final json = const JsonEncoder.withIndent(
+                          '  ',
+                        ).convert(<String, Object?>{
+                          'exported_at':
+                              DateTime.now().toUtc().toIso8601String(),
+                          'drink_logs': logs.map((l) => l.toJson()).toList(),
+                          'sleep_schedule': s.sleep.schedule.toJson(),
+                        });
                         await Clipboard.setData(ClipboardData(text: json));
                         s.showToast(
                           'Copied ${logs.length} logs to the clipboard',
@@ -248,22 +252,23 @@ class SettingsScreen extends StatelessWidget {
     final s = AppScope.of(context);
     final ok = await showDialog<bool>(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Delete everything on this phone?'),
-        content: const Text(
-          'Your drinks, sleep logs, alarms and settings are removed from this device. This can\'t be undone.',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: const Text('Keep'),
+      builder:
+          (context) => AlertDialog(
+            title: const Text('Delete everything on this phone?'),
+            content: const Text(
+              'Your drinks, sleep logs, alarms and settings are removed from this device. This can\'t be undone.',
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context, false),
+                child: const Text('Keep'),
+              ),
+              TextButton(
+                onPressed: () => Navigator.pop(context, true),
+                child: const Text('Delete'),
+              ),
+            ],
           ),
-          TextButton(
-            onPressed: () => Navigator.pop(context, true),
-            child: const Text('Delete'),
-          ),
-        ],
-      ),
     );
     if (ok != true) return;
     await s.platform.cancelAlarm('wake');

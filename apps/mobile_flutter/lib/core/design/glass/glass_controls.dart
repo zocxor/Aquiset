@@ -107,12 +107,13 @@ class GlassButton extends StatelessWidget {
           child: Material(
             type: MaterialType.transparency,
             child: InkWell(
-              onTap: onPressed == null
-                  ? null
-                  : () {
-                      HapticFeedback.lightImpact();
-                      onPressed!();
-                    },
+              onTap:
+                  onPressed == null
+                      ? null
+                      : () {
+                        HapticFeedback.lightImpact();
+                        onPressed!();
+                      },
               borderRadius: radius,
               child: ConstrainedBox(
                 constraints: BoxConstraints(
@@ -316,9 +317,10 @@ class GlassSegmented<T> extends StatelessWidget {
               return Stack(
                 children: [
                   AnimatedPositioned(
-                    duration: reduced
-                        ? Duration.zero
-                        : const Duration(milliseconds: 550),
+                    duration:
+                        reduced
+                            ? Duration.zero
+                            : const Duration(milliseconds: 550),
                     curve: AqMotion.fill,
                     left: 4 + index * w,
                     top: 4,

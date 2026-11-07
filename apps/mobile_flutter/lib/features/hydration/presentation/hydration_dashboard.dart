@@ -186,9 +186,10 @@ class _HeroCard extends StatelessWidget {
                 GlassButton(
                   label: h.snoozed ? 'Undo' : 'Snooze',
                   weight: GlassWeight.regular,
-                  semanticLabel: h.snoozed
-                      ? 'Undo snooze'
-                      : 'Snooze the next nudge for 30 minutes',
+                  semanticLabel:
+                      h.snoozed
+                          ? 'Undo snooze'
+                          : 'Snooze the next nudge for 30 minutes',
                   onPressed: h.toggleSnooze,
                 ),
               ],
@@ -208,12 +209,13 @@ class _CountUp extends StatelessWidget {
   @override
   Widget build(BuildContext context) => TweenAnimationBuilder<double>(
     tween: Tween<double>(end: value.toDouble()),
-    duration: AqEnvironment.motionReduced(context)
-        ? Duration.zero
-        : const Duration(milliseconds: 700),
+    duration:
+        AqEnvironment.motionReduced(context)
+            ? Duration.zero
+            : const Duration(milliseconds: 700),
     curve: Curves.easeOutCubic,
-    builder: (context, v, _) =>
-        Text(formatMl(v.round()), style: style, maxLines: 1),
+    builder:
+        (context, v, _) => Text(formatMl(v.round()), style: style, maxLines: 1),
   );
 }
 
@@ -284,8 +286,9 @@ class _QuickChip extends StatelessWidget {
                     Text(kind.label, style: AqType.label(t)),
                     Text(
                       '${kind.defaultMl} ml',
-                      style: AqType.caption(t)
-                          .copyWith(fontSize: 11, fontWeight: FontWeight.w600),
+                      style: AqType.caption(
+                        t,
+                      ).copyWith(fontSize: 11, fontWeight: FontWeight.w600),
                     ),
                   ],
                 ),
@@ -305,30 +308,32 @@ class _BottleIconPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final s = size.width / 24;
-    final p = Paint()
-      ..color = color
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.7
-      ..strokeCap = StrokeCap.round
-      ..strokeJoin = StrokeJoin.round;
+    final p =
+        Paint()
+          ..color = color
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 1.7
+          ..strokeCap = StrokeCap.round
+          ..strokeJoin = StrokeJoin.round;
     canvas.scale(s);
-    final path = Path()
-      ..moveTo(10, 2.5)
-      ..lineTo(14, 2.5)
-      ..moveTo(10.5, 2.5)
-      ..lineTo(10.5, 5.7)
-      ..lineTo(8.4, 8.4)
-      ..quadraticBezierTo(8, 9, 8, 9.9)
-      ..lineTo(8, 19)
-      ..quadraticBezierTo(8, 21.5, 10.5, 21.5)
-      ..lineTo(13.5, 21.5)
-      ..quadraticBezierTo(16, 21.5, 16, 19)
-      ..lineTo(16, 9.9)
-      ..quadraticBezierTo(16, 9, 15.6, 8.4)
-      ..lineTo(13.5, 5.7)
-      ..lineTo(13.5, 2.5)
-      ..moveTo(8, 13)
-      ..lineTo(16, 13);
+    final path =
+        Path()
+          ..moveTo(10, 2.5)
+          ..lineTo(14, 2.5)
+          ..moveTo(10.5, 2.5)
+          ..lineTo(10.5, 5.7)
+          ..lineTo(8.4, 8.4)
+          ..quadraticBezierTo(8, 9, 8, 9.9)
+          ..lineTo(8, 19)
+          ..quadraticBezierTo(8, 21.5, 10.5, 21.5)
+          ..lineTo(13.5, 21.5)
+          ..quadraticBezierTo(16, 21.5, 16, 19)
+          ..lineTo(16, 9.9)
+          ..quadraticBezierTo(16, 9, 15.6, 8.4)
+          ..lineTo(13.5, 5.7)
+          ..lineTo(13.5, 2.5)
+          ..moveTo(8, 13)
+          ..lineTo(16, 13);
     canvas.drawPath(path, p);
   }
 
@@ -440,9 +445,10 @@ class _TimelinePainter extends CustomPainter {
       canvas
         ..save()
         ..clipRRect(RRect.fromRectAndRadius(zone, const Radius.circular(8)));
-      final hatch = Paint()
-        ..color = t.track
-        ..strokeWidth = 3;
+      final hatch =
+          Paint()
+            ..color = t.track
+            ..strokeWidth = 3;
       for (var x = zone.left - zone.height; x < zone.right; x += 7) {
         canvas.drawLine(
           Offset(x, zone.bottom),
@@ -453,10 +459,11 @@ class _TimelinePainter extends CustomPainter {
       canvas.restore();
     }
 
-    final track = Paint()
-      ..color = t.track
-      ..strokeWidth = 2
-      ..strokeCap = StrokeCap.round;
+    final track =
+        Paint()
+          ..color = t.track
+          ..strokeWidth = 2
+          ..strokeCap = StrokeCap.round;
     canvas.drawLine(const Offset(0, mid), Offset(w, mid), track);
 
     final nx = _x(now, w);
@@ -466,17 +473,19 @@ class _TimelinePainter extends CustomPainter {
       Paint()
         ..strokeWidth = 2
         ..strokeCap = StrokeCap.round
-        ..shader = LinearGradient(colors: [t.waterTop, t.aqua])
-            .createShader(Rect.fromLTWH(0, mid - 1, math.max(1, nx), 2)),
+        ..shader = LinearGradient(
+          colors: [t.waterTop, t.aqua],
+        ).createShader(Rect.fromLTWH(0, mid - 1, math.max(1, nx), 2)),
     );
 
     final n = next;
     if (n != null) {
       final c = Offset(_x(n, w), mid);
-      final dash = Paint()
-        ..color = t.aqua
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 2;
+      final dash =
+          Paint()
+            ..color = t.aqua
+            ..style = PaintingStyle.stroke
+            ..strokeWidth = 2;
       final rect = Rect.fromCircle(center: c, radius: 6);
       for (var i = 0; i < 8; i++) {
         canvas.drawArc(rect, i * math.pi / 4, math.pi / 8, false, dash);
@@ -542,15 +551,16 @@ class _InsightCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final t = AqTokens.of(context);
     final hour = DateTime.now().hour;
-    final (title, body) = hour < 12
-        ? (
-            'A gentle start',
-            'Water from food and other drinks counts too. A plain-water log is only part of the picture.',
-          )
-        : (
-            'Warm afternoon',
-            'Needs rise with heat and activity. Sipping through the afternoon is gentler than drinking a lot at once.',
-          );
+    final (title, body) =
+        hour < 12
+            ? (
+              'A gentle start',
+              'Water from food and other drinks counts too. A plain-water log is only part of the picture.',
+            )
+            : (
+              'Warm afternoon',
+              'Needs rise with heat and activity. Sipping through the afternoon is gentler than drinking a lot at once.',
+            );
     return GlassCard(
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,

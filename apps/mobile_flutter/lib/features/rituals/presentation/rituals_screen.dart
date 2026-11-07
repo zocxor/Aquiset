@@ -67,19 +67,20 @@ class _RitualsScreenState extends State<RitualsScreen> {
                           tween: Tween<double>(end: day / 5),
                           duration: const Duration(milliseconds: 900),
                           curve: const Cubic(0.3, 1.2, 0.4, 1),
-                          builder: (context, v, _) => CustomPaint(
-                            painter: _RingPainter(
-                              progress: v,
-                              track: t.track,
-                              color: t.leaf,
-                            ),
-                            child: Center(
-                              child: Text(
-                                '$day/5',
-                                style: AqType.display(t, size: 26),
+                          builder:
+                              (context, v, _) => CustomPaint(
+                                painter: _RingPainter(
+                                  progress: v,
+                                  track: t.track,
+                                  color: t.leaf,
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    '$day/5',
+                                    style: AqType.display(t, size: 26),
+                                  ),
+                                ),
                               ),
-                            ),
-                          ),
                         ),
                       ),
                     ),
@@ -107,18 +108,19 @@ class _RitualsScreenState extends State<RitualsScreen> {
                   children: [
                     Expanded(
                       child: GlassButton(
-                        label: _doneToday
-                            ? 'Done for today'
-                            : 'Mark today done',
+                        label:
+                            _doneToday ? 'Done for today' : 'Mark today done',
                         icon: _doneToday ? Icons.check_rounded : null,
                         expand: true,
                         height: 48,
                         weight: GlassWeight.regular,
                         tint: _doneToday ? t.leafSoft : t.leaf,
                         foreground: _doneToday ? t.leaf : t.onAccent,
-                        onPressed: _paused
-                            ? null
-                            : () => setState(() => _doneToday = !_doneToday),
+                        onPressed:
+                            _paused
+                                ? null
+                                : () =>
+                                    setState(() => _doneToday = !_doneToday),
                       ),
                     ),
                     const SizedBox(width: 10),
@@ -168,9 +170,10 @@ class _RitualsScreenState extends State<RitualsScreen> {
                           foreground: (_joined[id] ?? false) ? t.leaf : null,
                           semanticLabel:
                               '${(_joined[id] ?? false) ? 'Leave' : 'Join'} $title',
-                          onPressed: () => setState(
-                            () => _joined[id] = !(_joined[id] ?? false),
-                          ),
+                          onPressed:
+                              () => setState(
+                                () => _joined[id] = !(_joined[id] ?? false),
+                              ),
                         ),
                       ],
                     ),
@@ -291,10 +294,11 @@ class _RingPainter extends CustomPainter {
       center: size.center(Offset.zero),
       radius: size.width / 2 - 8,
     );
-    final base = Paint()
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 7
-      ..strokeCap = StrokeCap.round;
+    final base =
+        Paint()
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 7
+          ..strokeCap = StrokeCap.round;
     canvas.drawArc(rect, 0, math.pi * 2, false, base..color = track);
     canvas.drawArc(
       rect,

@@ -105,8 +105,9 @@ ConsistencyReport bedtimeConsistency(
   MinuteOfDay plannedBedtime, {
   int toleranceMinutes = 30,
 }) => ConsistencyReport(
-  offsets: logs
-      .map((l) => plannedBedtime.signedOffsetTo(MinuteOfDay.of(l.bedtime)))
-      .toList(),
+  offsets:
+      logs
+          .map((l) => plannedBedtime.signedOffsetTo(MinuteOfDay.of(l.bedtime)))
+          .toList(),
   toleranceMinutes: toleranceMinutes,
 );

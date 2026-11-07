@@ -86,9 +86,8 @@ class GlassSurface extends StatelessWidget {
           GlassWeight.lens => t.glassLens,
         };
 
-    Widget body = padding == null
-        ? child
-        : Padding(padding: padding!, child: child);
+    Widget body =
+        padding == null ? child : Padding(padding: padding!, child: child);
 
     if (solid) {
       body = DecoratedBox(
@@ -126,9 +125,10 @@ class GlassSurface extends StatelessWidget {
         ),
       );
       final filter = filterFor(sigmaFor(weight));
-      body = shareBackdrop
-          ? BackdropFilter.grouped(filter: filter, child: body)
-          : BackdropFilter(filter: filter, child: body);
+      body =
+          shareBackdrop
+              ? BackdropFilter.grouped(filter: filter, child: body)
+              : BackdropFilter(filter: filter, child: body);
     }
 
     body = ClipRRect(borderRadius: borderRadius, child: body);
@@ -177,20 +177,21 @@ class GlassRimPainter extends CustomPainter {
     final rect = Offset.zero & size;
 
     // 1. Gradient hairline around the whole shape.
-    final rim = Paint()
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 1
-      ..shader = LinearGradient(
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
-        stops: const [0, 0.4, 0.62, 1],
-        colors: [
-          highlight,
-          edge,
-          edge.withValues(alpha: 0),
-          Color.lerp(edge, highlight, 0.4)!,
-        ],
-      ).createShader(rect);
+    final rim =
+        Paint()
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 1
+          ..shader = LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            stops: const [0, 0.4, 0.62, 1],
+            colors: [
+              highlight,
+              edge,
+              edge.withValues(alpha: 0),
+              Color.lerp(edge, highlight, 0.4)!,
+            ],
+          ).createShader(rect);
     canvas.drawRRect(borderRadius.toRRect(rect).deflate(0.5), rim);
 
     // 2. Lit top lip, fading out before the corners.
@@ -201,15 +202,16 @@ class GlassRimPainter extends CustomPainter {
       math.max(1, size.width - r * 1.2),
       2,
     );
-    final lip = Paint()
-      ..strokeWidth = 1
-      ..shader = LinearGradient(
-        colors: [
-          highlight.withValues(alpha: 0),
-          highlight,
-          highlight.withValues(alpha: 0),
-        ],
-      ).createShader(lipRect);
+    final lip =
+        Paint()
+          ..strokeWidth = 1
+          ..shader = LinearGradient(
+            colors: [
+              highlight.withValues(alpha: 0),
+              highlight,
+              highlight.withValues(alpha: 0),
+            ],
+          ).createShader(lipRect);
     canvas.drawLine(Offset(lipRect.left, 1.5), Offset(lipRect.right, 1.5), lip);
 
     // 3. Faint shade along the bottom edge.

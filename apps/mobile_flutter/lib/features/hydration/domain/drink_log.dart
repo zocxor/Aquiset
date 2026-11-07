@@ -60,9 +60,10 @@ class DrinkLog {
       orElse: () => LogSource.app,
     ),
     synced: json['synced'] as bool? ?? false,
-    deletedAt: json['deleted_at'] == null
-        ? null
-        : DateTime.parse(json['deleted_at'] as String).toLocal(),
+    deletedAt:
+        json['deleted_at'] == null
+            ? null
+            : DateTime.parse(json['deleted_at'] as String).toLocal(),
   );
 
   final String id;

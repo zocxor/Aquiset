@@ -175,21 +175,26 @@ class _NavButton extends StatelessWidget {
         child: TweenAnimationBuilder<double>(
           tween: Tween<double>(end: selected ? 1 : 0),
           duration: const Duration(milliseconds: 280),
-          builder: (context, v, _) => Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(item.icon, size: 22, color: Color.lerp(t.ink3, t.aqua, v)),
-              const SizedBox(height: 3),
-              Text(
-                item.label,
-                style: AqType.label(
-                  t,
-                  size: 11,
-                  color: Color.lerp(t.ink3, t.ink, v),
-                ),
+          builder:
+              (context, v, _) => Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    item.icon,
+                    size: 22,
+                    color: Color.lerp(t.ink3, t.aqua, v),
+                  ),
+                  const SizedBox(height: 3),
+                  Text(
+                    item.label,
+                    style: AqType.label(
+                      t,
+                      size: 11,
+                      color: Color.lerp(t.ink3, t.ink, v),
+                    ),
+                  ),
+                ],
               ),
-            ],
-          ),
         ),
       ),
     );

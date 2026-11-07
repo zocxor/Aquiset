@@ -26,15 +26,15 @@ class AquisetApp extends StatelessWidget {
             themeMode: s.themeMode,
             theme: buildAquisetTheme(AqTokens.day, Brightness.light),
             darkTheme: buildAquisetTheme(AqTokens.night, Brightness.dark),
-            themeAnimationDuration: s.reduceMotion
-                ? Duration.zero
-                : AqMotion.modeDuration,
+            themeAnimationDuration:
+                s.reduceMotion ? Duration.zero : AqMotion.modeDuration,
             themeAnimationCurve: Curves.easeInOutCubic,
-            builder: (context, child) => AqEnvironment(
-              reduceMotion: s.reduceMotion,
-              reduceTransparency: s.reduceTransparency,
-              child: child ?? const SizedBox.shrink(),
-            ),
+            builder:
+                (context, child) => AqEnvironment(
+                  reduceMotion: s.reduceMotion,
+                  reduceTransparency: s.reduceTransparency,
+                  child: child ?? const SizedBox.shrink(),
+                ),
             home: const AppShell(),
           );
         },
@@ -44,14 +44,16 @@ class AquisetApp extends StatelessWidget {
 }
 
 ThemeData buildAquisetTheme(AqTokens t, Brightness brightness) {
-  final scheme = ColorScheme.fromSeed(seedColor: t.aqua, brightness: brightness)
-      .copyWith(
-        primary: t.aqua,
-        onPrimary: t.onAccent,
-        surface: t.solidSurface,
-        onSurface: t.ink,
-        error: t.danger,
-      );
+  final scheme = ColorScheme.fromSeed(
+    seedColor: t.aqua,
+    brightness: brightness,
+  ).copyWith(
+    primary: t.aqua,
+    onPrimary: t.onAccent,
+    surface: t.solidSurface,
+    onSurface: t.ink,
+    error: t.danger,
+  );
   return ThemeData(
     useMaterial3: true,
     brightness: brightness,

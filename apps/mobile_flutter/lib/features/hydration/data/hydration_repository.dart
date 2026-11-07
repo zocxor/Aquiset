@@ -95,10 +95,11 @@ class PrefsHydrationRepository implements HydrationRepository {
   @override
   Future<void> markSynced(Iterable<String> ids) async {
     final set = ids.toSet();
-    final all = _all()
-        .where((l) => !(set.contains(l.id) && l.isDeleted))
-        .map((l) => set.contains(l.id) ? l.copyWith(synced: true) : l)
-        .toList();
+    final all =
+        _all()
+            .where((l) => !(set.contains(l.id) && l.isDeleted))
+            .map((l) => set.contains(l.id) ? l.copyWith(synced: true) : l)
+            .toList();
     await _save(all);
   }
 }

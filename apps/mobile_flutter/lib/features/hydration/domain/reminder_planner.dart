@@ -117,9 +117,10 @@ class ReminderPlanner {
   /// daylight-saving changes don't shift the target.
   DateTime _advance(DateTime t) {
     final m = MinuteOfDay.of(t);
-    final target = m.isWithin(policy.wakeStart, policy.wakeEnd)
-        ? policy.quietEnd
-        : policy.wakeStart;
+    final target =
+        m.isWithin(policy.wakeStart, policy.wakeEnd)
+            ? policy.quietEnd
+            : policy.wakeStart;
     final minutes = m.minutesUntil(target);
     return DateTime(
       t.year,

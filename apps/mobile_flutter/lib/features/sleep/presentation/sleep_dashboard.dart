@@ -202,10 +202,11 @@ class _DialPainter extends CustomPainter {
         ..color = t.track,
     );
 
-    final tick = Paint()
-      ..color = t.ink3.withValues(alpha: 0.6)
-      ..strokeWidth = 1.3
-      ..strokeCap = StrokeCap.round;
+    final tick =
+        Paint()
+          ..color = t.ink3.withValues(alpha: 0.6)
+          ..strokeWidth = 1.3
+          ..strokeCap = StrokeCap.round;
     for (var i = 0; i < 48; i++) {
       final m = i * 30.0;
       canvas.drawLine(_point(c, m, i.isEven ? 63 : 67), _point(c, m, 72), tick);
@@ -413,9 +414,14 @@ class _CheckRow extends StatelessWidget {
                     shape: BoxShape.circle,
                     border: done ? null : Border.all(color: t.ink3, width: 1.5),
                   ),
-                  child: done
-                      ? Icon(Icons.check_rounded, size: 16, color: t.onAccent)
-                      : null,
+                  child:
+                      done
+                          ? Icon(
+                            Icons.check_rounded,
+                            size: 16,
+                            color: t.onAccent,
+                          )
+                          : null,
                 ),
                 const SizedBox(width: 12),
                 Expanded(child: Text(label, style: AqType.label(t, size: 14))),
@@ -466,8 +472,9 @@ class _AlarmCard extends StatelessWidget {
                     const SizedBox(height: 6),
                     Text(
                       '${weekdaysLabel(c.schedule.alarmWeekdays)} · Gentle wake · Snooze 9 min',
-                      style: AqType.caption(t)
-                          .copyWith(color: t.ink2, fontSize: 12.5),
+                      style: AqType.caption(
+                        t,
+                      ).copyWith(color: t.ink2, fontSize: 12.5),
                     ),
                   ],
                 ),
@@ -496,8 +503,9 @@ class _AlarmCard extends StatelessWidget {
               Expanded(
                 child: Text(
                   c.alarmOn ? cap.statusText : 'Alarm off · nothing scheduled',
-                  style: AqType.caption(t)
-                      .copyWith(color: t.ink2, fontSize: 12.5),
+                  style: AqType.caption(
+                    t,
+                  ).copyWith(color: t.ink2, fontSize: 12.5),
                 ),
               ),
               GlassButton(
@@ -638,9 +646,8 @@ class _Dots extends StatelessWidget {
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color: i <= value ? t.lav : Colors.transparent,
-                border: i <= value
-                    ? null
-                    : Border.all(color: t.lav, width: 1.5),
+                border:
+                    i <= value ? null : Border.all(color: t.lav, width: 1.5),
               ),
             ),
         ],
@@ -656,114 +663,115 @@ Future<void> showLogNightSheet(BuildContext context, SleepController c) {
   return showModalBottomSheet<void>(
     context: context,
     isScrollControlled: true,
-    builder: (sheetContext) => StatefulBuilder(
-      builder: (context, setState) {
-        final t = AqTokens.of(context);
-        return Padding(
-          padding: EdgeInsets.fromLTRB(
-            12,
-            0,
-            12,
-            12 + MediaQuery.paddingOf(context).bottom,
-          ),
-          child: GlassSurface(
-            weight: GlassWeight.strong,
-            borderRadius: BorderRadius.circular(32),
-            padding: const EdgeInsets.all(18),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('Log last night', style: AqType.display(t, size: 28)),
-                const SizedBox(height: 14),
-                Row(
+    builder:
+        (sheetContext) => StatefulBuilder(
+          builder: (context, setState) {
+            final t = AqTokens.of(context);
+            return Padding(
+              padding: EdgeInsets.fromLTRB(
+                12,
+                0,
+                12,
+                12 + MediaQuery.paddingOf(context).bottom,
+              ),
+              child: GlassSurface(
+                weight: GlassWeight.strong,
+                borderRadius: BorderRadius.circular(32),
+                padding: const EdgeInsets.all(18),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Expanded(
-                      child: TimeStepper(
-                        label: 'Bed',
-                        value: bed.format12(),
-                        onMinus: () => setState(() => bed = bed - 15),
-                        onPlus: () => setState(() => bed = bed + 15),
-                      ),
+                    Text('Log last night', style: AqType.display(t, size: 28)),
+                    const SizedBox(height: 14),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: TimeStepper(
+                            label: 'Bed',
+                            value: bed.format12(),
+                            onMinus: () => setState(() => bed = bed - 15),
+                            onPlus: () => setState(() => bed = bed + 15),
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: TimeStepper(
+                            label: 'Up',
+                            value: wake.format12(),
+                            onMinus: () => setState(() => wake = wake - 15),
+                            onPlus: () => setState(() => wake = wake + 15),
+                          ),
+                        ),
+                      ],
                     ),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: TimeStepper(
-                        label: 'Up',
-                        value: wake.format12(),
-                        onMinus: () => setState(() => wake = wake - 15),
-                        onPlus: () => setState(() => wake = wake + 15),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                Text('How rested did you feel?', style: AqType.label(t)),
-                const SizedBox(height: 8),
-                Row(
-                  children: [
-                    for (var i = 1; i <= 5; i++)
-                      Padding(
-                        padding: const EdgeInsets.only(right: 8),
-                        child: Semantics(
-                          button: true,
-                          selected: rest == i,
-                          label: '$i out of 5',
-                          excludeSemantics: true,
-                          child: InkResponse(
-                            onTap: () => setState(() => rest = i),
-                            child: AnimatedContainer(
-                              duration: const Duration(milliseconds: 200),
-                              width: 44,
-                              height: 44,
-                              alignment: Alignment.center,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: rest == i ? t.lav : t.glassThin,
-                                border: Border.all(
-                                  color: rest == i ? t.lav : t.edge,
-                                ),
-                              ),
-                              child: Text(
-                                '$i',
-                                style: AqType.label(
-                                  t,
-                                  color: rest == i ? t.onAccent : t.ink,
+                    const SizedBox(height: 16),
+                    Text('How rested did you feel?', style: AqType.label(t)),
+                    const SizedBox(height: 8),
+                    Row(
+                      children: [
+                        for (var i = 1; i <= 5; i++)
+                          Padding(
+                            padding: const EdgeInsets.only(right: 8),
+                            child: Semantics(
+                              button: true,
+                              selected: rest == i,
+                              label: '$i out of 5',
+                              excludeSemantics: true,
+                              child: InkResponse(
+                                onTap: () => setState(() => rest = i),
+                                child: AnimatedContainer(
+                                  duration: const Duration(milliseconds: 200),
+                                  width: 44,
+                                  height: 44,
+                                  alignment: Alignment.center,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: rest == i ? t.lav : t.glassThin,
+                                    border: Border.all(
+                                      color: rest == i ? t.lav : t.edge,
+                                    ),
+                                  ),
+                                  child: Text(
+                                    '$i',
+                                    style: AqType.label(
+                                      t,
+                                      color: rest == i ? t.onAccent : t.ink,
+                                    ),
+                                  ),
                                 ),
                               ),
                             ),
                           ),
-                        ),
-                      ),
+                      ],
+                    ),
+                    const SizedBox(height: 18),
+                    GlassButton(
+                      label: 'Save',
+                      weight: GlassWeight.strong,
+                      expand: true,
+                      height: 50,
+                      onPressed: () {
+                        final now = DateTime.now();
+                        final wokeAt = wake.onDate(now);
+                        c.logNight(
+                          SleepLog(
+                            bedtime: wokeAt.subtract(
+                              Duration(minutes: bed.minutesUntil(wake)),
+                            ),
+                            wokeAt: wokeAt,
+                            restfulness: rest,
+                          ),
+                        );
+                        Navigator.of(sheetContext).pop();
+                      },
+                    ),
                   ],
                 ),
-                const SizedBox(height: 18),
-                GlassButton(
-                  label: 'Save',
-                  weight: GlassWeight.strong,
-                  expand: true,
-                  height: 50,
-                  onPressed: () {
-                    final now = DateTime.now();
-                    final wokeAt = wake.onDate(now);
-                    c.logNight(
-                      SleepLog(
-                        bedtime: wokeAt.subtract(
-                          Duration(minutes: bed.minutesUntil(wake)),
-                        ),
-                        wokeAt: wokeAt,
-                        restfulness: rest,
-                      ),
-                    );
-                    Navigator.of(sheetContext).pop();
-                  },
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    ),
+              ),
+            );
+          },
+        ),
   );
 }
 
@@ -816,8 +824,9 @@ class _ConsistencyCard extends StatelessWidget {
                             children: [
                               Positioned(
                                 left: 6,
-                                top: (30 + offset.clamp(-80, 80) * 0.45)
-                                    .toDouble(),
+                                top:
+                                    (30 + offset.clamp(-80, 80) * 0.45)
+                                        .toDouble(),
                                 child: Container(
                                   width: 12,
                                   height: 12,
@@ -825,12 +834,15 @@ class _ConsistencyCard extends StatelessWidget {
                                     shape: BoxShape.circle,
                                     color:
                                         offset.abs() <= report.toleranceMinutes
-                                        ? t.lav
-                                        : Colors.transparent,
+                                            ? t.lav
+                                            : Colors.transparent,
                                     border:
                                         offset.abs() <= report.toleranceMinutes
-                                        ? null
-                                        : Border.all(color: t.lav, width: 2),
+                                            ? null
+                                            : Border.all(
+                                              color: t.lav,
+                                              width: 2,
+                                            ),
                                   ),
                                 ),
                               ),

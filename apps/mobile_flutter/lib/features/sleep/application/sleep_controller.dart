@@ -23,18 +23,19 @@ class SleepController extends ChangeNotifier {
     _alarmOn = _prefs.getBool(_kAlarm) ?? true;
     final logs = _prefs.getString(_kLogs);
     if (logs != null) {
-      _logs = (jsonDecode(logs) as List<dynamic>).map((e) {
-        final m = e as Map<String, dynamic>;
-        return SleepLog(
-          bedtime: DateTime.fromMillisecondsSinceEpoch(
-            (m['bed'] as num).toInt(),
-          ),
-          wokeAt: DateTime.fromMillisecondsSinceEpoch(
-            (m['woke'] as num).toInt(),
-          ),
-          restfulness: (m['rest'] as num?)?.toInt(),
-        );
-      }).toList();
+      _logs =
+          (jsonDecode(logs) as List<dynamic>).map((e) {
+            final m = e as Map<String, dynamic>;
+            return SleepLog(
+              bedtime: DateTime.fromMillisecondsSinceEpoch(
+                (m['bed'] as num).toInt(),
+              ),
+              wokeAt: DateTime.fromMillisecondsSinceEpoch(
+                (m['woke'] as num).toInt(),
+              ),
+              restfulness: (m['rest'] as num?)?.toInt(),
+            );
+          }).toList();
     }
   }
 

@@ -50,29 +50,31 @@ class AppShell extends StatelessWidget {
               Positioned.fill(
                 child: ValueListenableBuilder<AppTab>(
                   valueListenable: s.tab,
-                  builder: (context, tab, _) => Column(
-                    children: [
-                      _Header(tab: tab),
-                      Expanded(
-                        child: AnimatedSwitcher(
-                          duration: reduced
-                              ? Duration.zero
-                              : const Duration(milliseconds: 320),
-                          switchInCurve: Curves.easeOutCubic,
-                          switchOutCurve: Curves.easeInCubic,
-                          child: KeyedSubtree(
-                            key: ValueKey<AppTab>(tab),
-                            child: switch (tab) {
-                              AppTab.hydrate => const HydrationDashboard(),
-                              AppTab.sleep => const SleepDashboard(),
-                              AppTab.rituals => const RitualsScreen(),
-                              AppTab.you => const SettingsScreen(),
-                            },
+                  builder:
+                      (context, tab, _) => Column(
+                        children: [
+                          _Header(tab: tab),
+                          Expanded(
+                            child: AnimatedSwitcher(
+                              duration:
+                                  reduced
+                                      ? Duration.zero
+                                      : const Duration(milliseconds: 320),
+                              switchInCurve: Curves.easeOutCubic,
+                              switchOutCurve: Curves.easeInCubic,
+                              child: KeyedSubtree(
+                                key: ValueKey<AppTab>(tab),
+                                child: switch (tab) {
+                                  AppTab.hydrate => const HydrationDashboard(),
+                                  AppTab.sleep => const SleepDashboard(),
+                                  AppTab.rituals => const RitualsScreen(),
+                                  AppTab.you => const SettingsScreen(),
+                                },
+                              ),
+                            ),
                           ),
-                        ),
+                        ],
                       ),
-                    ],
-                  ),
                 ),
               ),
               Positioned(
@@ -90,11 +92,12 @@ class AppShell extends StatelessWidget {
                     Expanded(
                       child: ValueListenableBuilder<AppTab>(
                         valueListenable: s.tab,
-                        builder: (context, tab, _) => LiquidGlassNavBar(
-                          items: _items,
-                          index: tab.index,
-                          onChanged: (i) => s.tab.value = AppTab.values[i],
-                        ),
+                        builder:
+                            (context, tab, _) => LiquidGlassNavBar(
+                              items: _items,
+                              index: tab.index,
+                              onChanged: (i) => s.tab.value = AppTab.values[i],
+                            ),
                       ),
                     ),
                     const SizedBox(width: 10),
@@ -229,13 +232,13 @@ class _ModeToggle extends StatelessWidget {
                 child: Stack(
                   children: [
                     AnimatedAlign(
-                      duration: AqEnvironment.motionReduced(context)
-                          ? Duration.zero
-                          : AqMotion.pressDuration * 1.4,
+                      duration:
+                          AqEnvironment.motionReduced(context)
+                              ? Duration.zero
+                              : AqMotion.pressDuration * 1.4,
                       curve: AqMotion.press,
-                      alignment: night
-                          ? Alignment.centerRight
-                          : Alignment.centerLeft,
+                      alignment:
+                          night ? Alignment.centerRight : Alignment.centerLeft,
                       child: Padding(
                         padding: const EdgeInsets.all(4),
                         child: Container(
@@ -294,27 +297,34 @@ class _ToastLayer extends StatelessWidget {
     final reduced = AqEnvironment.motionReduced(context);
     return ValueListenableBuilder<ToastData?>(
       valueListenable: s.toast,
-      builder: (context, toast, _) => AnimatedSwitcher(
-        duration: reduced ? Duration.zero : const Duration(milliseconds: 420),
-        switchInCurve: AqMotion.press,
-        transitionBuilder: (child, animation) => FadeTransition(
-          opacity: animation,
-          child: ScaleTransition(
-            scale: Tween<double>(begin: 0.94, end: 1).animate(animation),
-            child: child,
-          ),
-        ),
-        child: toast == null
-            ? const SizedBox.shrink()
-            : Center(
-                key: ObjectKey(toast),
-                child: GlassToast(
-                  message: toast.message,
-                  actionLabel: toast.actionLabel,
-                  onAction: toast.onAction,
+      builder:
+          (context, toast, _) => AnimatedSwitcher(
+            duration:
+                reduced ? Duration.zero : const Duration(milliseconds: 420),
+            switchInCurve: AqMotion.press,
+            transitionBuilder:
+                (child, animation) => FadeTransition(
+                  opacity: animation,
+                  child: ScaleTransition(
+                    scale: Tween<double>(
+                      begin: 0.94,
+                      end: 1,
+                    ).animate(animation),
+                    child: child,
+                  ),
                 ),
-              ),
-      ),
+            child:
+                toast == null
+                    ? const SizedBox.shrink()
+                    : Center(
+                      key: ObjectKey(toast),
+                      child: GlassToast(
+                        message: toast.message,
+                        actionLabel: toast.actionLabel,
+                        onAction: toast.onAction,
+                      ),
+                    ),
+          ),
     );
   }
 }

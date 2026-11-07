@@ -53,16 +53,10 @@ void main() {
   });
 
   test('ignored nudges never escalate: spacing stays one interval', () {
-    final first = planner.next(
-      now: at(13, 0),
-      sentToday: 3,
-      lastReminderAt: at(12, 0),
-    )!;
-    final second = planner.next(
-      now: first,
-      sentToday: 4,
-      lastReminderAt: first,
-    )!;
+    final first =
+        planner.next(now: at(13, 0), sentToday: 3, lastReminderAt: at(12, 0))!;
+    final second =
+        planner.next(now: first, sentToday: 4, lastReminderAt: first)!;
     expect(first, at(13, 30));
     expect(second.difference(first), const ReminderPolicy().interval);
   });

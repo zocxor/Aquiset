@@ -46,30 +46,34 @@ class _NaturePainter extends CustomPainter {
     (200, 760, 90),
   ];
 
-  static final Path _hill1 = Path()
-    ..moveTo(0, 330)
-    ..cubicTo(70, 290, 140, 300, 200, 325)
-    ..cubicTo(260, 350, 320, 300, 390, 310)
-    ..lineTo(390, 844)
-    ..lineTo(0, 844)
-    ..close();
-  static final Path _hill2 = Path()
-    ..moveTo(0, 420)
-    ..cubicTo(90, 372, 170, 400, 240, 420)
-    ..cubicTo(300, 438, 350, 402, 390, 406)
-    ..lineTo(390, 844)
-    ..lineTo(0, 844)
-    ..close();
-  static final Path _leafLeft = Path()
-    ..moveTo(-20, 844)
-    ..cubicTo(10, 720, 60, 650, 124, 606)
-    ..cubicTo(102, 700, 72, 780, 62, 844)
-    ..close();
-  static final Path _leafRight = Path()
-    ..moveTo(410, 844)
-    ..cubicTo(380, 740, 340, 690, 278, 660)
-    ..cubicTo(310, 740, 330, 800, 330, 844)
-    ..close();
+  static final Path _hill1 =
+      Path()
+        ..moveTo(0, 330)
+        ..cubicTo(70, 290, 140, 300, 200, 325)
+        ..cubicTo(260, 350, 320, 300, 390, 310)
+        ..lineTo(390, 844)
+        ..lineTo(0, 844)
+        ..close();
+  static final Path _hill2 =
+      Path()
+        ..moveTo(0, 420)
+        ..cubicTo(90, 372, 170, 400, 240, 420)
+        ..cubicTo(300, 438, 350, 402, 390, 406)
+        ..lineTo(390, 844)
+        ..lineTo(0, 844)
+        ..close();
+  static final Path _leafLeft =
+      Path()
+        ..moveTo(-20, 844)
+        ..cubicTo(10, 720, 60, 650, 124, 606)
+        ..cubicTo(102, 700, 72, 780, 62, 844)
+        ..close();
+  static final Path _leafRight =
+      Path()
+        ..moveTo(410, 844)
+        ..cubicTo(380, 740, 340, 690, 278, 660)
+        ..cubicTo(310, 740, 330, 800, 330, 844)
+        ..close();
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -114,8 +118,8 @@ class _NaturePainter extends CustomPainter {
         30,
         Paint()..color = _moonlight.withValues(alpha: 0.95 * t.nightness),
       );
-      final star = Paint()
-        ..color = _moonlight.withValues(alpha: 0.75 * t.nightness);
+      final star =
+          Paint()..color = _moonlight.withValues(alpha: 0.75 * t.nightness);
       for (final (x, y, r) in _stars) {
         canvas.drawCircle(Offset(x, y), r, star);
       }
@@ -150,10 +154,11 @@ class _NaturePainter extends CustomPainter {
           colors: [t.lake, t.hill2],
         ).createShader(lake),
     );
-    final ripple = Paint()
-      ..color = t.lakeLine
-      ..strokeWidth = 1.5
-      ..strokeCap = StrokeCap.round;
+    final ripple =
+        Paint()
+          ..color = t.lakeLine
+          ..strokeWidth = 1.5
+          ..strokeCap = StrokeCap.round;
     for (final (x, y, len) in _lakeLines) {
       canvas.drawLine(Offset(x, y), Offset(x + len, y), ripple);
     }

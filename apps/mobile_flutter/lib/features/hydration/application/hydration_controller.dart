@@ -72,9 +72,8 @@ class HydrationController extends ChangeNotifier {
     return ReminderPlanner(settings.policy).next(
       now: now,
       sentToday: _prefs.getInt(_kSent) ?? 0,
-      lastReminderAt: last == null
-          ? null
-          : DateTime.fromMillisecondsSinceEpoch(last),
+      lastReminderAt:
+          last == null ? null : DateTime.fromMillisecondsSinceEpoch(last),
       lastDrinkAt: lastLog?.loggedAt,
       snoozedUntil: snoozed ? _snoozedUntil : null,
     );
@@ -153,9 +152,10 @@ class HydrationController extends ChangeNotifier {
         date: date,
         logs: count,
         progress: target == 0 ? 1 : (count / target).clamp(0.0, 1.0),
-        state: count >= target
-            ? RhythmDayState.kept
-            : (isToday ? RhythmDayState.today : RhythmDayState.rest),
+        state:
+            count >= target
+                ? RhythmDayState.kept
+                : (isToday ? RhythmDayState.today : RhythmDayState.rest),
       );
     });
 

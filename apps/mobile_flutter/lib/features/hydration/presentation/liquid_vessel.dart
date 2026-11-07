@@ -64,17 +64,19 @@ class _LiquidVesselState extends State<LiquidVessel>
         tween: Tween<double>(end: widget.progress.clamp(0.06, 1.0)),
         duration: reduced ? Duration.zero : AqMotion.fillDuration,
         curve: AqMotion.fill,
-        builder: (context, level, _) => AnimatedBuilder(
-          animation: _wave,
-          builder: (context, _) => CustomPaint(
-            size: widget.size,
-            painter: _VesselPainter(
-              tokens: t,
-              level: level,
-              phase: _wave.value,
+        builder:
+            (context, level, _) => AnimatedBuilder(
+              animation: _wave,
+              builder:
+                  (context, _) => CustomPaint(
+                    size: widget.size,
+                    painter: _VesselPainter(
+                      tokens: t,
+                      level: level,
+                      phase: _wave.value,
+                    ),
+                  ),
             ),
-          ),
-        ),
       ),
     );
   }
@@ -140,10 +142,11 @@ class _VesselPainter extends CustomPainter {
     );
 
     // Measuring marks at 25 / 50 / 75 %.
-    final mark = Paint()
-      ..color = t.edge
-      ..strokeWidth = 1.5
-      ..strokeCap = StrokeCap.round;
+    final mark =
+        Paint()
+          ..color = t.edge
+          ..strokeWidth = 1.5
+          ..strokeCap = StrokeCap.round;
     for (final (frac, len) in const [(0.25, 12.0), (0.5, 18.0), (0.75, 12.0)]) {
       final y = size.height * frac;
       canvas.drawLine(
