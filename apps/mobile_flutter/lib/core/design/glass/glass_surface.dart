@@ -50,29 +50,35 @@ class GlassSurface extends StatelessWidget {
   final bool shareBackdrop;
   final bool shadow;
 
-  static final Map<double, ui.ImageFilter> _filters = <double, ui.ImageFilter>{};
+  static final Map<double, ui.ImageFilter> _filters =
+      <double, ui.ImageFilter>{};
 
   /// Cached blur + saturation filter for a blur sigma.
   static ui.ImageFilter filterFor(double sigma) => _filters.putIfAbsent(
-        sigma,
-        () => ui.ImageFilter.compose(
-          outer: ui.ColorFilter.matrix(_saturationMatrix(1.75)),
-          inner: ui.ImageFilter.blur(sigmaX: sigma, sigmaY: sigma, tileMode: ui.TileMode.clamp),
-        ),
-      );
+    sigma,
+    () => ui.ImageFilter.compose(
+      outer: ui.ColorFilter.matrix(_saturationMatrix(1.75)),
+      inner: ui.ImageFilter.blur(
+        sigmaX: sigma,
+        sigmaY: sigma,
+        tileMode: ui.TileMode.clamp,
+      ),
+    ),
+  );
 
   static double sigmaFor(GlassWeight weight) => switch (weight) {
-        GlassWeight.thin => 12.0,
-        GlassWeight.regular => 20.0,
-        GlassWeight.strong => 28.0,
-        GlassWeight.lens => 8.0,
-      };
+    GlassWeight.thin => 12.0,
+    GlassWeight.regular => 20.0,
+    GlassWeight.strong => 28.0,
+    GlassWeight.lens => 8.0,
+  };
 
   @override
   Widget build(BuildContext context) {
     final t = AqTokens.of(context);
     final solid = AqEnvironment.transparencyReduced(context);
-    final fill = tint ??
+    final fill =
+        tint ??
         switch (weight) {
           GlassWeight.thin => t.glassThin,
           GlassWeight.regular => t.glassRegular,
@@ -80,7 +86,9 @@ class GlassSurface extends StatelessWidget {
           GlassWeight.lens => t.glassLens,
         };
 
-    Widget body = padding == null ? child : Padding(padding: padding!, child: child);
+    Widget body = padding == null
+        ? child
+        : Padding(padding: padding!, child: child);
 
     if (solid) {
       body = DecoratedBox(
@@ -130,8 +138,18 @@ class GlassSurface extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: borderRadius,
         boxShadow: [
-          BoxShadow(color: t.shadow, blurRadius: 36, spreadRadius: -18, offset: const Offset(0, 16)),
-          BoxShadow(color: t.shadow, blurRadius: 8, spreadRadius: -4, offset: const Offset(0, 2)),
+          BoxShadow(
+            color: t.shadow,
+            blurRadius: 36,
+            spreadRadius: -18,
+            offset: const Offset(0, 16),
+          ),
+          BoxShadow(
+            color: t.shadow,
+            blurRadius: 8,
+            spreadRadius: -4,
+            offset: const Offset(0, 2),
+          ),
         ],
       ),
       child: body,
@@ -166,17 +184,31 @@ class GlassRimPainter extends CustomPainter {
         begin: Alignment.topLeft,
         end: Alignment.bottomRight,
         stops: const [0, 0.4, 0.62, 1],
-        colors: [highlight, edge, edge.withValues(alpha: 0), Color.lerp(edge, highlight, 0.4)!],
+        colors: [
+          highlight,
+          edge,
+          edge.withValues(alpha: 0),
+          Color.lerp(edge, highlight, 0.4)!,
+        ],
       ).createShader(rect);
     canvas.drawRRect(borderRadius.toRRect(rect).deflate(0.5), rim);
 
     // 2. Lit top lip, fading out before the corners.
     final r = math.min(borderRadius.topLeft.x, size.width / 2);
-    final lipRect = Rect.fromLTWH(r * 0.6, 0, math.max(1, size.width - r * 1.2), 2);
+    final lipRect = Rect.fromLTWH(
+      r * 0.6,
+      0,
+      math.max(1, size.width - r * 1.2),
+      2,
+    );
     final lip = Paint()
       ..strokeWidth = 1
       ..shader = LinearGradient(
-        colors: [highlight.withValues(alpha: 0), highlight, highlight.withValues(alpha: 0)],
+        colors: [
+          highlight.withValues(alpha: 0),
+          highlight,
+          highlight.withValues(alpha: 0),
+        ],
       ).createShader(lipRect);
     canvas.drawLine(Offset(lipRect.left, 1.5), Offset(lipRect.right, 1.5), lip);
 

@@ -9,21 +9,38 @@ void main() {
   DateTime at(int h, int m, {int day = 6}) => DateTime(2026, 11, day, h, m);
 
   test('next nudge is one interval after the last one', () {
-    expect(planner.next(now: at(10, 0), sentToday: 2, lastReminderAt: at(9, 30)), at(11, 0));
+    expect(
+      planner.next(now: at(10, 0), sentToday: 2, lastReminderAt: at(9, 30)),
+      at(11, 0),
+    );
   });
 
   test('a drink pushes the next nudge back by the cooldown', () {
-    final next = planner.next(now: at(10, 40), sentToday: 2, lastReminderAt: at(9, 30), lastDrinkAt: at(10, 30));
+    final next = planner.next(
+      now: at(10, 40),
+      sentToday: 2,
+      lastReminderAt: at(9, 30),
+      lastDrinkAt: at(10, 30),
+    );
     expect(next, at(11, 15));
   });
 
   test('snooze is respected', () {
-    final next = planner.next(now: at(10, 0), sentToday: 1, lastReminderAt: at(8, 0), snoozedUntil: at(10, 30));
+    final next = planner.next(
+      now: at(10, 0),
+      sentToday: 1,
+      lastReminderAt: at(8, 0),
+      snoozedUntil: at(10, 30),
+    );
     expect(next, at(10, 30));
   });
 
   test('never lands in quiet hours; moves to when they end', () {
-    final next = planner.next(now: at(21, 30), sentToday: 3, lastReminderAt: at(21, 0));
+    final next = planner.next(
+      now: at(21, 30),
+      sentToday: 3,
+      lastReminderAt: at(21, 0),
+    );
     expect(next, at(7, 0, day: 7));
   });
 
@@ -36,8 +53,16 @@ void main() {
   });
 
   test('ignored nudges never escalate: spacing stays one interval', () {
-    final first = planner.next(now: at(13, 0), sentToday: 3, lastReminderAt: at(12, 0))!;
-    final second = planner.next(now: first, sentToday: 4, lastReminderAt: first)!;
+    final first = planner.next(
+      now: at(13, 0),
+      sentToday: 3,
+      lastReminderAt: at(12, 0),
+    )!;
+    final second = planner.next(
+      now: first,
+      sentToday: 4,
+      lastReminderAt: first,
+    )!;
     expect(first, at(13, 30));
     expect(second.difference(first), const ReminderPolicy().interval);
   });
@@ -53,6 +78,9 @@ void main() {
   });
 
   test('rounds up to the next whole minute', () {
-    expect(planner.next(now: DateTime(2026, 11, 6, 10, 0, 30), sentToday: 0), at(10, 1));
+    expect(
+      planner.next(now: DateTime(2026, 11, 6, 10, 0, 30), sentToday: 0),
+      at(10, 1),
+    );
   });
 }

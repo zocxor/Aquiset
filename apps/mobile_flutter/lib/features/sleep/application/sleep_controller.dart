@@ -10,18 +10,28 @@ import '../domain/sleep_schedule.dart';
 typedef WindDownStep = ({String id, String label, String meta});
 
 class SleepController extends ChangeNotifier {
-  SleepController({required SharedPreferences prefs, required this.platform, this.clock = systemClock})
-      : _prefs = prefs {
+  SleepController({
+    required SharedPreferences prefs,
+    required this.platform,
+    this.clock = systemClock,
+  }) : _prefs = prefs {
     final raw = _prefs.getString(_kSchedule);
-    if (raw != null) _schedule = SleepSchedule.fromJson(jsonDecode(raw) as Map<String, dynamic>);
+    if (raw != null)
+      _schedule = SleepSchedule.fromJson(
+        jsonDecode(raw) as Map<String, dynamic>,
+      );
     _alarmOn = _prefs.getBool(_kAlarm) ?? true;
     final logs = _prefs.getString(_kLogs);
     if (logs != null) {
       _logs = (jsonDecode(logs) as List<dynamic>).map((e) {
         final m = e as Map<String, dynamic>;
         return SleepLog(
-          bedtime: DateTime.fromMillisecondsSinceEpoch((m['bed'] as num).toInt()),
-          wokeAt: DateTime.fromMillisecondsSinceEpoch((m['woke'] as num).toInt()),
+          bedtime: DateTime.fromMillisecondsSinceEpoch(
+            (m['bed'] as num).toInt(),
+          ),
+          wokeAt: DateTime.fromMillisecondsSinceEpoch(
+            (m['woke'] as num).toInt(),
+          ),
           restfulness: (m['rest'] as num?)?.toInt(),
         );
       }).toList();
@@ -37,7 +47,10 @@ class SleepController extends ChangeNotifier {
   final Clock clock;
   final SharedPreferences _prefs;
 
-  SleepSchedule _schedule = SleepSchedule(bedtime: MinuteOfDay.hm(23, 0), wake: MinuteOfDay.hm(6, 45));
+  SleepSchedule _schedule = SleepSchedule(
+    bedtime: MinuteOfDay.hm(23, 0),
+    wake: MinuteOfDay.hm(6, 45),
+  );
   bool _alarmOn = true;
   AlarmCapability _capability = AlarmCapability.unavailable;
   List<SleepLog> _logs = <SleepLog>[];
@@ -51,19 +64,23 @@ class SleepController extends ChangeNotifier {
   SleepLog? get lastNight => _logs.isEmpty ? null : _logs.last;
 
   List<WindDownStep> get steps => <WindDownStep>[
-        (id: 'lights', label: 'Dim the lights', meta: _schedule.windDownStart.format12()),
-        (id: 'tomorrow', label: 'Set out tomorrow', meta: '2 min'),
-        (id: 'read', label: 'Quiet reading', meta: '10 min'),
-        (id: 'breathe', label: 'Slow breathing', meta: '3 min'),
-      ];
+    (
+      id: 'lights',
+      label: 'Dim the lights',
+      meta: _schedule.windDownStart.format12(),
+    ),
+    (id: 'tomorrow', label: 'Set out tomorrow', meta: '2 min'),
+    (id: 'read', label: 'Quiet reading', meta: '10 min'),
+    (id: 'breathe', label: 'Slow breathing', meta: '3 min'),
+  ];
 
   bool isDone(String id) => _stepsDone.contains(id);
   int get stepsDone => _stepsDone.length;
 
   ConsistencyReport get consistency => bedtimeConsistency(
-        _logs.length > 7 ? _logs.sublist(_logs.length - 7) : _logs,
-        _schedule.bedtime,
-      );
+    _logs.length > 7 ? _logs.sublist(_logs.length - 7) : _logs,
+    _schedule.bedtime,
+  );
 
   Future<void> load() async {
     _capability = await platform.alarmCapability();
@@ -78,9 +95,11 @@ class SleepController extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> shiftBedtime(int minutes) => _setSchedule(_schedule.shifted(bedtimeBy: minutes));
+  Future<void> shiftBedtime(int minutes) =>
+      _setSchedule(_schedule.shifted(bedtimeBy: minutes));
 
-  Future<void> shiftWake(int minutes) => _setSchedule(_schedule.shifted(wakeBy: minutes));
+  Future<void> shiftWake(int minutes) =>
+      _setSchedule(_schedule.shifted(wakeBy: minutes));
 
   Future<void> setAlarmOn(bool on) async {
     if (on && !_capability.authorized && _capability.canRequest) {
@@ -122,20 +141,26 @@ class SleepController extends ChangeNotifier {
     if (_logs.length > 60) _logs = _logs.sublist(_logs.length - 60);
     await _prefs.setString(
       _kLogs,
-      jsonEncode(_logs
-          .map((l) => <String, Object?>{
+      jsonEncode(
+        _logs
+            .map(
+              (l) => <String, Object?>{
                 'bed': l.bedtime.millisecondsSinceEpoch,
                 'woke': l.wokeAt.millisecondsSinceEpoch,
                 'rest': l.restfulness,
-              })
-          .toList()),
+              },
+            )
+            .toList(),
+      ),
     );
     notifyListeners();
   }
 
   WindDownSession _session() {
     final now = clock();
-    final bed = _schedule.bedtime.nextAfter(now.subtract(const Duration(hours: 2)));
+    final bed = _schedule.bedtime.nextAfter(
+      now.subtract(const Duration(hours: 2)),
+    );
     return WindDownSession(
       bedtime: bed,
       wake: _schedule.wake.nextAfter(bed),
@@ -157,11 +182,13 @@ class SleepController extends ChangeNotifier {
       await platform.cancelAlarm(wakeAlarmId);
       return;
     }
-    await platform.scheduleAlarm(AlarmSpec(
-      id: wakeAlarmId,
-      hour: _schedule.wake.hour,
-      minute: _schedule.wake.minute,
-      weekdays: _schedule.alarmWeekdays,
-    ));
+    await platform.scheduleAlarm(
+      AlarmSpec(
+        id: wakeAlarmId,
+        hour: _schedule.wake.hour,
+        minute: _schedule.wake.minute,
+        weekdays: _schedule.alarmWeekdays,
+      ),
+    );
   }
 }

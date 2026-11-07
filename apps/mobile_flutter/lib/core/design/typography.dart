@@ -7,9 +7,11 @@ import 'tokens.dart';
 /// everything you read or tap. Both are OFL fonts served by google_fonts;
 /// bundle them under assets/google_fonts/ for fully offline launches.
 abstract final class AqType {
-  static String get sansFamily => GoogleFonts.getFont('Manrope').fontFamily ?? 'Manrope';
+  static String get sansFamily =>
+      GoogleFonts.getFont('Manrope').fontFamily ?? 'Manrope';
 
-  static TextStyle display(AqTokens t, {double size = 36}) => GoogleFonts.getFont(
+  static TextStyle display(AqTokens t, {double size = 36}) =>
+      GoogleFonts.getFont(
         'Instrument Serif',
         fontSize: size,
         height: 1.02,
@@ -17,7 +19,8 @@ abstract final class AqType {
         color: t.ink,
       );
 
-  static TextStyle eyebrow(AqTokens t, {double size = 11}) => GoogleFonts.getFont(
+  static TextStyle eyebrow(AqTokens t, {double size = 11}) =>
+      GoogleFonts.getFont(
         'Manrope',
         fontSize: size,
         fontWeight: FontWeight.w800,
@@ -25,18 +28,35 @@ abstract final class AqType {
         color: t.ink3,
       );
 
-  static TextStyle title(AqTokens t) =>
-      GoogleFonts.getFont('Manrope', fontSize: 15, fontWeight: FontWeight.w800, color: t.ink);
+  static TextStyle title(AqTokens t) => GoogleFonts.getFont(
+    'Manrope',
+    fontSize: 15,
+    fontWeight: FontWeight.w800,
+    color: t.ink,
+  );
 
   static TextStyle label(AqTokens t, {double size = 13, Color? color}) =>
-      GoogleFonts.getFont('Manrope', fontSize: size, fontWeight: FontWeight.w800, color: color ?? t.ink);
+      GoogleFonts.getFont(
+        'Manrope',
+        fontSize: size,
+        fontWeight: FontWeight.w800,
+        color: color ?? t.ink,
+      );
 
-  static TextStyle body(AqTokens t) =>
-      GoogleFonts.getFont('Manrope', fontSize: 13.5, height: 1.5, color: t.ink2);
+  static TextStyle body(AqTokens t) => GoogleFonts.getFont(
+    'Manrope',
+    fontSize: 13.5,
+    height: 1.5,
+    color: t.ink2,
+  );
 
   static TextStyle caption(AqTokens t) =>
       GoogleFonts.getFont('Manrope', fontSize: 12, height: 1.45, color: t.ink3);
 
-  static TextStyle stat(AqTokens t, {double size = 17}) =>
-      GoogleFonts.getFont('Manrope', fontSize: size, fontWeight: FontWeight.w800, color: t.ink);
+  static TextStyle stat(AqTokens t, {double size = 17}) => GoogleFonts.getFont(
+    'Manrope',
+    fontSize: size,
+    fontWeight: FontWeight.w800,
+    color: t.ink,
+  );
 }

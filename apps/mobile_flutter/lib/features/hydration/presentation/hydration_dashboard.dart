@@ -25,7 +25,12 @@ class HydrationDashboard extends StatelessWidget {
       builder: (context, _) {
         final h = s.hydration;
         return ListView(
-          padding: EdgeInsets.fromLTRB(16, 4, 16, 150 + MediaQuery.paddingOf(context).bottom),
+          padding: EdgeInsets.fromLTRB(
+            16,
+            4,
+            16,
+            150 + MediaQuery.paddingOf(context).bottom,
+          ),
           children: [
             RiseIn(child: _HeroCard(h: h)),
             const SizedBox(height: 14),
@@ -56,12 +61,15 @@ String formatMl(int ml) {
 String _hourLabel(MinuteOfDay m) {
   final h = m.hour % 12 == 0 ? 12 : m.hour % 12;
   final suffix = m.hour < 12 ? 'am' : 'pm';
-  return m.minute == 0 ? '$h $suffix' : '$h:${m.minute.toString().padLeft(2, '0')} $suffix';
+  return m.minute == 0
+      ? '$h $suffix'
+      : '$h:${m.minute.toString().padLeft(2, '0')} $suffix';
 }
 
 String _whenLabel(DateTime at) {
   final now = DateTime.now();
-  final sameDay = at.year == now.year && at.month == now.month && at.day == now.day;
+  final sameDay =
+      at.year == now.year && at.month == now.month && at.day == now.day;
   return '${MinuteOfDay.of(at).format12()}${sameDay ? '' : ' tomorrow'}';
 }
 
@@ -84,7 +92,8 @@ class _HeroCard extends StatelessWidget {
             children: [
               LiquidVessel(
                 progress: h.progress,
-                semanticLabel: '${h.totalMl} of ${h.goalMl} millilitres, ${h.percent} percent of your goal',
+                semanticLabel:
+                    '${h.totalMl} of ${h.goalMl} millilitres, ${h.percent} percent of your goal',
               ),
               const SizedBox(width: 18),
               Expanded(
@@ -99,19 +108,38 @@ class _HeroCard extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.baseline,
                         textBaseline: TextBaseline.alphabetic,
                         children: [
-                          Flexible(child: _CountUp(value: h.totalMl, style: AqType.display(t, size: 54))),
+                          Flexible(
+                            child: _CountUp(
+                              value: h.totalMl,
+                              style: AqType.display(t, size: 54),
+                            ),
+                          ),
                           const SizedBox(width: 4),
-                          Text('ml', style: AqType.label(t, size: 15, color: t.ink2)),
+                          Text(
+                            'ml',
+                            style: AqType.label(t, size: 15, color: t.ink2),
+                          ),
                         ],
                       ),
                       const SizedBox(height: 6),
-                      Text('of your ${formatMl(h.goalMl)} ml goal', style: AqType.body(t).copyWith(fontSize: 13)),
+                      Text(
+                        'of your ${formatMl(h.goalMl)} ml goal',
+                        style: AqType.body(t).copyWith(fontSize: 13),
+                      ),
                       const SizedBox(height: 12),
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                        decoration: BoxDecoration(color: t.aquaSoft, borderRadius: BorderRadius.circular(14)),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 6,
+                        ),
+                        decoration: BoxDecoration(
+                          color: t.aquaSoft,
+                          borderRadius: BorderRadius.circular(14),
+                        ),
                         child: Text(
-                          h.progress >= 1 ? 'Goal reached · no need for more' : '${h.percent}% of your goal',
+                          h.progress >= 1
+                              ? 'Goal reached · no need for more'
+                              : '${h.percent}% of your goal',
                           style: AqType.label(t, size: 12.5, color: t.aqua),
                         ),
                       ),
@@ -145,7 +173,9 @@ class _HeroCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        next == null ? 'No more nudges today' : 'Next nudge · ${_whenLabel(next)}',
+                        next == null
+                            ? 'No more nudges today'
+                            : 'Next nudge · ${_whenLabel(next)}',
                         style: AqType.label(t, size: 13.5),
                       ),
                       const SizedBox(height: 1),
@@ -156,7 +186,9 @@ class _HeroCard extends StatelessWidget {
                 GlassButton(
                   label: h.snoozed ? 'Undo' : 'Snooze',
                   weight: GlassWeight.regular,
-                  semanticLabel: h.snoozed ? 'Undo snooze' : 'Snooze the next nudge for 30 minutes',
+                  semanticLabel: h.snoozed
+                      ? 'Undo snooze'
+                      : 'Snooze the next nudge for 30 minutes',
                   onPressed: h.toggleSnooze,
                 ),
               ],
@@ -175,17 +207,25 @@ class _CountUp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => TweenAnimationBuilder<double>(
-        tween: Tween<double>(end: value.toDouble()),
-        duration: AqEnvironment.motionReduced(context) ? Duration.zero : const Duration(milliseconds: 700),
-        curve: Curves.easeOutCubic,
-        builder: (context, v, _) => Text(formatMl(v.round()), style: style, maxLines: 1),
-      );
+    tween: Tween<double>(end: value.toDouble()),
+    duration: AqEnvironment.motionReduced(context)
+        ? Duration.zero
+        : const Duration(milliseconds: 700),
+    curve: Curves.easeOutCubic,
+    builder: (context, v, _) =>
+        Text(formatMl(v.round()), style: style, maxLines: 1),
+  );
 }
 
 class _QuickLogRow extends StatelessWidget {
   const _QuickLogRow();
 
-  static const List<DrinkKind> _kinds = [DrinkKind.sip, DrinkKind.cup, DrinkKind.glass, DrinkKind.bottle];
+  static const List<DrinkKind> _kinds = [
+    DrinkKind.sip,
+    DrinkKind.cup,
+    DrinkKind.glass,
+    DrinkKind.bottle,
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -236,10 +276,17 @@ class _QuickChip extends StatelessWidget {
                     if (icon != null)
                       Icon(icon, size: 24, color: t.aqua)
                     else
-                      CustomPaint(size: const Size(24, 24), painter: _BottleIconPainter(t.aqua)),
+                      CustomPaint(
+                        size: const Size(24, 24),
+                        painter: _BottleIconPainter(t.aqua),
+                      ),
                     const SizedBox(height: 3),
                     Text(kind.label, style: AqType.label(t)),
-                    Text('${kind.defaultMl} ml', style: AqType.caption(t).copyWith(fontSize: 11, fontWeight: FontWeight.w600)),
+                    Text(
+                      '${kind.defaultMl} ml',
+                      style: AqType.caption(t)
+                          .copyWith(fontSize: 11, fontWeight: FontWeight.w600),
+                    ),
                   ],
                 ),
               ),
@@ -286,7 +333,8 @@ class _BottleIconPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(_BottleIconPainter oldDelegate) => oldDelegate.color != color;
+  bool shouldRepaint(_BottleIconPainter oldDelegate) =>
+      oldDelegate.color != color;
 }
 
 class _TimelineCard extends StatelessWidget {
@@ -299,7 +347,10 @@ class _TimelineCard extends StatelessWidget {
     final policy = h.policy;
     final start = policy.wakeStart;
     final span = start.minutesUntil(policy.wakeEnd);
-    final labels = List<String>.generate(5, (i) => _hourLabel(start + (span * i / 4).round()));
+    final labels = List<String>.generate(
+      5,
+      (i) => _hourLabel(start + (span * i / 4).round()),
+    );
     final next = h.nextNudge;
     return GlassCard(
       child: Column(
@@ -308,12 +359,16 @@ class _TimelineCard extends StatelessWidget {
           Row(
             children: [
               Expanded(child: Text("Today's rhythm", style: AqType.title(t))),
-              Text('Waking hours ${_hourLabel(start)} – ${_hourLabel(policy.wakeEnd)}', style: AqType.caption(t)),
+              Text(
+                'Waking hours ${_hourLabel(start)} – ${_hourLabel(policy.wakeEnd)}',
+                style: AqType.caption(t),
+              ),
             ],
           ),
           const SizedBox(height: 10),
           Semantics(
-            label: '${h.today.length} drinks logged today.'
+            label:
+                '${h.today.length} drinks logged today.'
                 '${next == null ? '' : ' Next nudge at ${_whenLabel(next)}.'}',
             child: SizedBox(
               height: 64,
@@ -326,14 +381,20 @@ class _TimelineCard extends StatelessWidget {
                   quietStart: policy.quietStart,
                   now: MinuteOfDay.of(DateTime.now()),
                   next: next == null ? null : MinuteOfDay.of(next),
-                  drops: [for (final l in h.today) (MinuteOfDay.of(l.loggedAt), l.amountMl)],
+                  drops: [
+                    for (final l in h.today)
+                      (MinuteOfDay.of(l.loggedAt), l.amountMl),
+                  ],
                 ),
               ),
             ),
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [for (final l in labels) Text(l, style: AqType.caption(t).copyWith(fontSize: 11))],
+            children: [
+              for (final l in labels)
+                Text(l, style: AqType.caption(t).copyWith(fontSize: 11)),
+            ],
           ),
         ],
       ),
@@ -383,7 +444,11 @@ class _TimelinePainter extends CustomPainter {
         ..color = t.track
         ..strokeWidth = 3;
       for (var x = zone.left - zone.height; x < zone.right; x += 7) {
-        canvas.drawLine(Offset(x, zone.bottom), Offset(x + zone.height, zone.top), hatch);
+        canvas.drawLine(
+          Offset(x, zone.bottom),
+          Offset(x + zone.height, zone.top),
+          hatch,
+        );
       }
       canvas.restore();
     }
@@ -401,7 +466,8 @@ class _TimelinePainter extends CustomPainter {
       Paint()
         ..strokeWidth = 2
         ..strokeCap = StrokeCap.round
-        ..shader = LinearGradient(colors: [t.waterTop, t.aqua]).createShader(Rect.fromLTWH(0, mid - 1, math.max(1, nx), 2)),
+        ..shader = LinearGradient(colors: [t.waterTop, t.aqua])
+            .createShader(Rect.fromLTWH(0, mid - 1, math.max(1, nx), 2)),
     );
 
     final n = next;
@@ -444,11 +510,22 @@ class _TimelinePainter extends CustomPainter {
     final label = TextPainter(
       text: TextSpan(
         text: 'NOW',
-        style: TextStyle(fontSize: 10, fontWeight: FontWeight.w800, letterSpacing: 1, color: t.ink2),
+        style: TextStyle(
+          fontSize: 10,
+          fontWeight: FontWeight.w800,
+          letterSpacing: 1,
+          color: t.ink2,
+        ),
       ),
       textDirection: TextDirection.ltr,
     )..layout();
-    label.paint(canvas, Offset((nx - label.width / 2).clamp(0.0, math.max(0.0, w - label.width)), -2));
+    label.paint(
+      canvas,
+      Offset(
+        (nx - label.width / 2).clamp(0.0, math.max(0.0, w - label.width)),
+        -2,
+      ),
+    );
   }
 
   @override
@@ -466,8 +543,14 @@ class _InsightCard extends StatelessWidget {
     final t = AqTokens.of(context);
     final hour = DateTime.now().hour;
     final (title, body) = hour < 12
-        ? ('A gentle start', 'Water from food and other drinks counts too. A plain-water log is only part of the picture.')
-        : ('Warm afternoon', 'Needs rise with heat and activity. Sipping through the afternoon is gentler than drinking a lot at once.');
+        ? (
+            'A gentle start',
+            'Water from food and other drinks counts too. A plain-water log is only part of the picture.',
+          )
+        : (
+            'Warm afternoon',
+            'Needs rise with heat and activity. Sipping through the afternoon is gentler than drinking a lot at once.',
+          );
     return GlassCard(
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -475,7 +558,10 @@ class _InsightCard extends StatelessWidget {
           Container(
             width: 44,
             height: 44,
-            decoration: BoxDecoration(color: t.leafSoft, borderRadius: BorderRadius.circular(16)),
+            decoration: BoxDecoration(
+              color: t.leafSoft,
+              borderRadius: BorderRadius.circular(16),
+            ),
             child: Icon(Icons.eco_outlined, size: 22, color: t.leaf),
           ),
           const SizedBox(width: 14),
@@ -487,7 +573,10 @@ class _InsightCard extends StatelessWidget {
                 const SizedBox(height: 4),
                 Text(body, style: AqType.body(t)),
                 const SizedBox(height: 8),
-                Text('Source: NHS hydration guidance · review pending', style: AqType.caption(t).copyWith(fontSize: 11.5)),
+                Text(
+                  'Source: NHS hydration guidance · review pending',
+                  style: AqType.caption(t).copyWith(fontSize: 11.5),
+                ),
               ],
             ),
           ),
@@ -501,7 +590,15 @@ class _WeekCard extends StatelessWidget {
   const _WeekCard({required this.h});
   final HydrationController h;
 
-  static const List<String> _names = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+  static const List<String> _names = [
+    'Monday',
+    'Tuesday',
+    'Wednesday',
+    'Thursday',
+    'Friday',
+    'Saturday',
+    'Sunday',
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -514,7 +611,10 @@ class _WeekCard extends StatelessWidget {
           Row(
             children: [
               Expanded(child: Text('This week', style: AqType.title(t))),
-              Text('Routine kept on $kept ${kept == 1 ? 'day' : 'days'}', style: AqType.caption(t)),
+              Text(
+                'Routine kept on $kept ${kept == 1 ? 'day' : 'days'}',
+                style: AqType.caption(t),
+              ),
             ],
           ),
           const SizedBox(height: 14),
@@ -523,17 +623,21 @@ class _WeekCard extends StatelessWidget {
             children: [
               for (final day in h.week)
                 Semantics(
-                  label: '${_names[day.date.weekday - 1]}, ${switch (day.state) {
-                    RhythmDayState.kept => 'routine kept',
-                    RhythmDayState.rest => 'rest day',
-                    RhythmDayState.today => 'today, in progress',
-                  }}',
+                  label:
+                      '${_names[day.date.weekday - 1]}, ${switch (day.state) {
+                        RhythmDayState.kept => 'routine kept',
+                        RhythmDayState.rest => 'rest day',
+                        RhythmDayState.today => 'today, in progress',
+                      }}',
                   excludeSemantics: true,
                   child: Column(
                     children: [
                       _DayCapsule(day: day),
                       const SizedBox(height: 6),
-                      Text(_names[day.date.weekday - 1][0], style: AqType.label(t, size: 11, color: t.ink3)),
+                      Text(
+                        _names[day.date.weekday - 1][0],
+                        style: AqType.label(t, size: 11, color: t.ink3),
+                      ),
                     ],
                   ),
                 ),
@@ -563,7 +667,10 @@ class _DayCapsule extends StatelessWidget {
       decoration: BoxDecoration(
         color: kept ? t.aqua : t.glassThin,
         borderRadius: BorderRadius.circular(17),
-        border: Border.all(color: today ? t.aqua : t.edge, width: today ? 2 : 1),
+        border: Border.all(
+          color: today ? t.aqua : t.edge,
+          width: today ? 2 : 1,
+        ),
       ),
       child: Stack(
         alignment: Alignment.center,

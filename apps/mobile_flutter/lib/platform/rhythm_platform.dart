@@ -32,15 +32,22 @@ class AlarmCapability {
   factory AlarmCapability.fromMap(Map<Object?, Object?>? m) {
     if (m == null) return unavailable;
     return AlarmCapability(
-      backend: AlarmBackend.values.firstWhere((b) => b.name == m['backend'], orElse: () => AlarmBackend.none),
+      backend: AlarmBackend.values.firstWhere(
+        (b) => b.name == m['backend'],
+        orElse: () => AlarmBackend.none,
+      ),
       authorized: m['authorized'] == true,
       exactAllowed: m['exactAllowed'] == true,
       canRequest: m['canRequest'] == true,
     );
   }
 
-  static const AlarmCapability unavailable =
-      AlarmCapability(backend: AlarmBackend.none, authorized: false, exactAllowed: false, canRequest: false);
+  static const AlarmCapability unavailable = AlarmCapability(
+    backend: AlarmBackend.none,
+    authorized: false,
+    exactAllowed: false,
+    canRequest: false,
+  );
 
   final AlarmBackend backend;
   final bool authorized;
@@ -51,12 +58,14 @@ class AlarmCapability {
 
   /// Honest one-line status for the alarm card (blueprint section 06).
   String get statusText => switch (backend) {
-        AlarmBackend.none => 'Alarms aren\'t available on this device',
-        _ when !authorized => 'Alarm permission is off · tap to allow',
-        AlarmBackend.alarmManager when !exactAllowed => 'Exact alarms are off · may ring late',
-        AlarmBackend.notifications => 'Rings as a notification · silent mode can mute it',
-        _ => 'Alarm allowed · rings without internet',
-      };
+    AlarmBackend.none => 'Alarms aren\'t available on this device',
+    _ when !authorized => 'Alarm permission is off · tap to allow',
+    AlarmBackend.alarmManager when !exactAllowed =>
+      'Exact alarms are off · may ring late',
+    AlarmBackend.notifications =>
+      'Rings as a notification · silent mode can mute it',
+    _ => 'Alarm allowed · rings without internet',
+  };
 }
 
 @immutable
@@ -84,15 +93,15 @@ class AlarmSpec {
   final String sound;
 
   Map<String, Object?> toMap() => <String, Object?>{
-        'id': id,
-        'hour': hour,
-        'minute': minute,
-        'weekdays': weekdays.toList()..sort(),
-        'label': label,
-        'snoozeMinutes': snoozeMinutes,
-        'vibrate': vibrate,
-        'sound': sound,
-      };
+    'id': id,
+    'hour': hour,
+    'minute': minute,
+    'weekdays': weekdays.toList()..sort(),
+    'label': label,
+    'snoozeMinutes': snoozeMinutes,
+    'vibrate': vibrate,
+    'sound': sound,
+  };
 }
 
 /// What the home and lock screen widgets, the watch and Control Center show.
@@ -124,23 +133,28 @@ class RhythmSnapshot {
   final DateTime updatedAt;
 
   Map<String, Object?> toMap() => <String, Object?>{
-        'totalMl': totalMl,
-        'goalMl': goalMl,
-        'drinksToday': drinksToday,
-        'nextNudgeEpochMs': nextNudge?.millisecondsSinceEpoch,
-        'bedtimeLabel': bedtimeLabel,
-        'wakeLabel': wakeLabel,
-        'windDownLabel': windDownLabel,
-        'alarmOn': alarmOn,
-        'night': night,
-        'updatedEpochMs': updatedAt.millisecondsSinceEpoch,
-      };
+    'totalMl': totalMl,
+    'goalMl': goalMl,
+    'drinksToday': drinksToday,
+    'nextNudgeEpochMs': nextNudge?.millisecondsSinceEpoch,
+    'bedtimeLabel': bedtimeLabel,
+    'wakeLabel': wakeLabel,
+    'windDownLabel': windDownLabel,
+    'alarmOn': alarmOn,
+    'night': night,
+    'updatedEpochMs': updatedAt.millisecondsSinceEpoch,
+  };
 }
 
 /// Inputs for the wind-down Live Activity (iOS) / Live Update (Android).
 @immutable
 class WindDownSession {
-  const WindDownSession({required this.bedtime, required this.wake, required this.stepsDone, required this.stepsTotal});
+  const WindDownSession({
+    required this.bedtime,
+    required this.wake,
+    required this.stepsDone,
+    required this.stepsTotal,
+  });
 
   final DateTime bedtime;
   final DateTime wake;
@@ -148,11 +162,11 @@ class WindDownSession {
   final int stepsTotal;
 
   Map<String, Object?> toMap() => <String, Object?>{
-        'bedtimeEpochMs': bedtime.millisecondsSinceEpoch,
-        'wakeEpochMs': wake.millisecondsSinceEpoch,
-        'stepsDone': stepsDone,
-        'stepsTotal': stepsTotal,
-      };
+    'bedtimeEpochMs': bedtime.millisecondsSinceEpoch,
+    'wakeEpochMs': wake.millisecondsSinceEpoch,
+    'stepsDone': stepsDone,
+    'stepsTotal': stepsTotal,
+  };
 }
 
 /// Something the person started outside the app: a widget button, Control
@@ -164,9 +178,12 @@ sealed class PlatformAction {
     if (raw is! Map) return null;
     return switch (raw['type']) {
       'logDrink' => LogDrinkAction(
-          (raw['ml'] as num?)?.toInt() ?? DrinkKind.glass.defaultMl,
-          LogSource.values.firstWhere((s) => s.name == raw['source'], orElse: () => LogSource.shortcut),
+        (raw['ml'] as num?)?.toInt() ?? DrinkKind.glass.defaultMl,
+        LogSource.values.firstWhere(
+          (s) => s.name == raw['source'],
+          orElse: () => LogSource.shortcut,
         ),
+      ),
       'startWindDown' => const StartWindDownAction(),
       'open' => OpenTabAction(raw['tab'] as String? ?? 'hydrate'),
       _ => null,
@@ -194,13 +211,16 @@ final class OpenTabAction extends PlatformAction {
 /// side is missing, so tests and unsupported platforms keep working, and
 /// alarms never depend on the backend or AI services.
 class RhythmPlatform {
-  RhythmPlatform({MethodChannel? channel}) : _channel = channel ?? const MethodChannel('aquiset/platform') {
+  RhythmPlatform({MethodChannel? channel})
+    : _channel = channel ?? const MethodChannel('aquiset/platform') {
     _channel.setMethodCallHandler(_onNativeCall);
   }
 
   final MethodChannel _channel;
-  final StreamController<PlatformAction> _actions = StreamController<PlatformAction>.broadcast();
-  final StreamController<void> _externalLogs = StreamController<void>.broadcast();
+  final StreamController<PlatformAction> _actions =
+      StreamController<PlatformAction>.broadcast();
+  final StreamController<void> _externalLogs =
+      StreamController<void>.broadcast();
 
   /// Actions delivered while the app is running.
   Stream<PlatformAction> get actions => _actions.stream;
@@ -211,47 +231,66 @@ class RhythmPlatform {
 
   // ── Alarms ────────────────────────────────────────────────────────────
 
-  Future<AlarmCapability> alarmCapability() async =>
-      AlarmCapability.fromMap(await _call<Map<Object?, Object?>>('alarm.capability'));
+  Future<AlarmCapability> alarmCapability() async => AlarmCapability.fromMap(
+    await _call<Map<Object?, Object?>>('alarm.capability'),
+  );
 
   Future<AlarmCapability> requestAlarmPermission() async =>
-      AlarmCapability.fromMap(await _call<Map<Object?, Object?>>('alarm.requestPermission'));
+      AlarmCapability.fromMap(
+        await _call<Map<Object?, Object?>>('alarm.requestPermission'),
+      );
 
-  Future<bool> scheduleAlarm(AlarmSpec spec) async => await _call<bool>('alarm.schedule', spec.toMap()) ?? false;
+  Future<bool> scheduleAlarm(AlarmSpec spec) async =>
+      await _call<bool>('alarm.schedule', spec.toMap()) ?? false;
 
-  Future<void> cancelAlarm(String id) => _call<void>('alarm.cancel', <String, Object?>{'id': id});
+  Future<void> cancelAlarm(String id) =>
+      _call<void>('alarm.cancel', <String, Object?>{'id': id});
 
   /// Rings once after [delay] so the person can hear and check the alarm.
-  Future<bool> scheduleTestAlarm({Duration delay = const Duration(seconds: 10)}) async =>
-      await _call<bool>('alarm.test', <String, Object?>{'seconds': delay.inSeconds}) ?? false;
+  Future<bool> scheduleTestAlarm({
+    Duration delay = const Duration(seconds: 10),
+  }) async =>
+      await _call<bool>('alarm.test', <String, Object?>{
+        'seconds': delay.inSeconds,
+      }) ??
+      false;
 
   /// Opens the system screen for exact alarms (Android) or app settings (iOS).
   Future<void> openAlarmSettings() => _call<void>('alarm.openSettings');
 
   // ── Hydration nudges (local notifications, never remote) ─────────────
 
-  Future<void> scheduleNudge(DateTime at, {required String body}) => _call<void>(
-        'nudge.schedule',
-        <String, Object?>{'epochMs': at.millisecondsSinceEpoch, 'title': 'A gentle nudge', 'body': body},
-      );
+  Future<void> scheduleNudge(DateTime at, {required String body}) =>
+      _call<void>('nudge.schedule', <String, Object?>{
+        'epochMs': at.millisecondsSinceEpoch,
+        'title': 'A gentle nudge',
+        'body': body,
+      });
 
   Future<void> cancelNudges() => _call<void>('nudge.cancelAll');
 
   // ── Widgets, Control Center, watch ───────────────────────────────────
 
-  Future<void> publishSnapshot(RhythmSnapshot snapshot) => _call<void>('widgets.publish', snapshot.toMap());
+  Future<void> publishSnapshot(RhythmSnapshot snapshot) =>
+      _call<void>('widgets.publish', snapshot.toMap());
 
   /// Logs made from widgets, Control Center, Siri or the watch while the app
   /// was closed. Each is returned once and then cleared natively.
   Future<List<DrinkLog>> drainExternalLogs() async {
-    final raw = await _call<List<Object?>>('widgets.drainLogs') ?? const <Object?>[];
+    final raw =
+        await _call<List<Object?>>('widgets.drainLogs') ?? const <Object?>[];
     return raw.whereType<Map<Object?, Object?>>().map((m) {
       return DrinkLog(
         id: m['id'] as String? ?? newClientId(),
         amountMl: (m['ml'] as num?)?.toInt() ?? DrinkKind.glass.defaultMl,
         kind: DrinkKind.parse(m['kind'] as String?),
-        loggedAt: DateTime.fromMillisecondsSinceEpoch((m['epochMs'] as num?)?.toInt() ?? 0),
-        source: LogSource.values.firstWhere((s) => s.name == m['source'], orElse: () => LogSource.widget),
+        loggedAt: DateTime.fromMillisecondsSinceEpoch(
+          (m['epochMs'] as num?)?.toInt() ?? 0,
+        ),
+        source: LogSource.values.firstWhere(
+          (s) => s.name == m['source'],
+          orElse: () => LogSource.widget,
+        ),
       );
     }).toList();
   }
@@ -261,14 +300,16 @@ class RhythmPlatform {
   Future<bool> startWindDown(WindDownSession session) async =>
       await _call<bool>('live.start', session.toMap()) ?? false;
 
-  Future<void> updateWindDown(WindDownSession session) => _call<void>('live.update', session.toMap());
+  Future<void> updateWindDown(WindDownSession session) =>
+      _call<void>('live.update', session.toMap());
 
   Future<void> endWindDown() => _call<void>('live.end');
 
   // ── Launch ────────────────────────────────────────────────────────────
 
   /// The action that cold-started the app (shortcut, widget tap), if any.
-  Future<PlatformAction?> takeLaunchAction() async => PlatformAction.parse(await _call<Object?>('launch.take'));
+  Future<PlatformAction?> takeLaunchAction() async =>
+      PlatformAction.parse(await _call<Object?>('launch.take'));
 
   Future<Object?> _onNativeCall(MethodCall call) async {
     if (call.method == 'action') {

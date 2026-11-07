@@ -24,7 +24,12 @@ class SettingsScreen extends StatelessWidget {
         final set = s.settings;
         final policy = set.policy;
         return ListView(
-          padding: EdgeInsets.fromLTRB(16, 4, 16, 150 + MediaQuery.paddingOf(context).bottom),
+          padding: EdgeInsets.fromLTRB(
+            16,
+            4,
+            16,
+            150 + MediaQuery.paddingOf(context).bottom,
+          ),
           children: [
             RiseIn(
               child: GlassCard(
@@ -35,12 +40,19 @@ class SettingsScreen extends StatelessWidget {
                     const SizedBox(height: 12),
                     GlassSegmented<ThemePref>(
                       semanticLabel: 'Appearance',
-                      options: const [(ThemePref.system, 'System'), (ThemePref.day, 'Day'), (ThemePref.night, 'Night')],
+                      options: const [
+                        (ThemePref.system, 'System'),
+                        (ThemePref.day, 'Day'),
+                        (ThemePref.night, 'Night'),
+                      ],
                       selected: set.theme,
                       onChanged: set.setTheme,
                     ),
                     const SizedBox(height: 10),
-                    Text('Day and Night change colours only. Layout, widgets and controls stay the same.', style: AqType.caption(t)),
+                    Text(
+                      'Day and Night change colours only. Layout, widgets and controls stay the same.',
+                      style: AqType.caption(t),
+                    ),
                   ],
                 ),
               ),
@@ -49,7 +61,10 @@ class SettingsScreen extends StatelessWidget {
             RiseIn(
               index: 1,
               child: GlassCard(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 6,
+                ),
                 child: Column(
                   children: [
                     _SwitchRow(
@@ -73,11 +88,17 @@ class SettingsScreen extends StatelessWidget {
             RiseIn(
               index: 2,
               child: GlassCard(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 6,
+                ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Padding(padding: const EdgeInsets.only(top: 8, bottom: 4), child: Text('Hydration', style: AqType.title(t))),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 8, bottom: 4),
+                      child: Text('Hydration', style: AqType.title(t)),
+                    ),
                     _StepRow(
                       title: 'Daily goal',
                       value: '${formatMl(set.goalMl)} ml',
@@ -89,22 +110,40 @@ class SettingsScreen extends StatelessWidget {
                       title: 'Gentle nudges',
                       subtitle: 'Only inside your waking hours',
                       value: policy.enabled,
-                      onChanged: (v) => set.setPolicy(policy.copyWith(enabled: v)),
+                      onChanged: (v) =>
+                          set.setPolicy(policy.copyWith(enabled: v)),
                       divider: true,
                     ),
                     _StepRow(
                       title: 'Daily nudge limit',
                       value: '${policy.dailyCap} a day',
-                      onMinus: () => set.setPolicy(policy.copyWith(dailyCap: (policy.dailyCap - 1).clamp(0, 12))),
-                      onPlus: () => set.setPolicy(policy.copyWith(dailyCap: (policy.dailyCap + 1).clamp(0, 12))),
+                      onMinus: () => set.setPolicy(
+                        policy.copyWith(
+                          dailyCap: (policy.dailyCap - 1).clamp(0, 12),
+                        ),
+                      ),
+                      onPlus: () => set.setPolicy(
+                        policy.copyWith(
+                          dailyCap: (policy.dailyCap + 1).clamp(0, 12),
+                        ),
+                      ),
                     ),
-                    _InfoRow(title: 'Quiet hours', value: '${policy.quietStart.format12()} – ${policy.quietEnd.format12()}'),
-                    _InfoRow(title: 'Pause after a drink', value: '${policy.cooldownAfterDrink.inMinutes} min'),
+                    _InfoRow(
+                      title: 'Quiet hours',
+                      value:
+                          '${policy.quietStart.format12()} – ${policy.quietEnd.format12()}',
+                    ),
+                    _InfoRow(
+                      title: 'Pause after a drink',
+                      value: '${policy.cooldownAfterDrink.inMinutes} min',
+                    ),
                     _SwitchRow(
                       title: 'A clinician manages my fluids',
                       subtitle: 'Turns off generic nudges. Follow your clinician\'s plan.',
                       value: policy.followsClinicianPlan,
-                      onChanged: (v) => set.setPolicy(policy.copyWith(followsClinicianPlan: v)),
+                      onChanged: (v) => set.setPolicy(
+                        policy.copyWith(followsClinicianPlan: v),
+                      ),
                       divider: true,
                     ),
                   ],
@@ -120,11 +159,26 @@ class SettingsScreen extends StatelessWidget {
                   children: [
                     Text('Beyond the app', style: AqType.title(t)),
                     const SizedBox(height: 10),
-                    const _Feature(icon: Icons.widgets_outlined, text: 'Home and Lock Screen widgets with one-tap logging'),
-                    const _Feature(icon: Icons.toggle_on_outlined, text: 'Control Center and Action button: log a glass'),
-                    const _Feature(icon: Icons.record_voice_over_outlined, text: 'Siri and Shortcuts: "Log a glass in AQUISET"'),
-                    const _Feature(icon: Icons.timelapse_rounded, text: 'Wind-down countdown on the Lock Screen and Dynamic Island'),
-                    const _Feature(icon: Icons.watch_outlined, text: 'Apple Watch: today\'s water and quick log'),
+                    const _Feature(
+                      icon: Icons.widgets_outlined,
+                      text: 'Home and Lock Screen widgets with one-tap logging',
+                    ),
+                    const _Feature(
+                      icon: Icons.toggle_on_outlined,
+                      text: 'Control Center and Action button: log a glass',
+                    ),
+                    const _Feature(
+                      icon: Icons.record_voice_over_outlined,
+                      text: 'Siri and Shortcuts: "Log a glass in AQUISET"',
+                    ),
+                    const _Feature(
+                      icon: Icons.timelapse_rounded,
+                      text: 'Wind-down countdown on the Lock Screen and Dynamic Island',
+                    ),
+                    const _Feature(
+                      icon: Icons.watch_outlined,
+                      text: 'Apple Watch: today\'s water and quick log',
+                    ),
                   ],
                 ),
               ),
@@ -137,23 +191,47 @@ class SettingsScreen extends StatelessWidget {
                 child: Column(
                   children: [
                     ListTile(
-                      leading: Icon(Icons.file_download_outlined, color: t.aqua),
-                      title: Text('Export my data', style: AqType.label(t, size: 14)),
-                      subtitle: Text('Copies your logs as JSON', style: AqType.caption(t)),
+                      leading: Icon(
+                        Icons.file_download_outlined,
+                        color: t.aqua,
+                      ),
+                      title: Text(
+                        'Export my data',
+                        style: AqType.label(t, size: 14),
+                      ),
+                      subtitle: Text(
+                        'Copies your logs as JSON',
+                        style: AqType.caption(t),
+                      ),
                       onTap: () async {
-                        final logs = await s.hydration.repository.logsBetween(DateTime(2000), DateTime(2100));
-                        final json = const JsonEncoder.withIndent('  ').convert(<String, Object?>{
-                          'exported_at': DateTime.now().toUtc().toIso8601String(),
-                          'drink_logs': logs.map((l) => l.toJson()).toList(),
-                          'sleep_schedule': s.sleep.schedule.toJson(),
-                        });
+                        final logs = await s.hydration.repository.logsBetween(
+                          DateTime(2000),
+                          DateTime(2100),
+                        );
+                        final json = const JsonEncoder.withIndent('  ').convert(
+                          <String, Object?>{
+                            'exported_at': DateTime.now()
+                                .toUtc()
+                                .toIso8601String(),
+                            'drink_logs': logs.map((l) => l.toJson()).toList(),
+                            'sleep_schedule': s.sleep.schedule.toJson(),
+                          },
+                        );
                         await Clipboard.setData(ClipboardData(text: json));
-                        s.showToast('Copied ${logs.length} logs to the clipboard');
+                        s.showToast(
+                          'Copied ${logs.length} logs to the clipboard',
+                        );
                       },
                     ),
                     ListTile(
-                      leading: Icon(Icons.delete_outline_rounded, color: t.danger),
-                      title: Text('Delete my data on this phone', style: AqType.label(t, size: 14, color: t.danger)),
+                      leading: Icon(
+                        Icons.delete_outline_rounded,
+                        color: t.danger,
+                      ),
+                      title: Text(
+                        'Delete my data on this phone',
+                        style: AqType.label(t, size: 14, color: t.danger),
+                      ),
                       onTap: () => _confirmDelete(context),
                     ),
                   ],
@@ -172,10 +250,18 @@ class SettingsScreen extends StatelessWidget {
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Delete everything on this phone?'),
-        content: const Text('Your drinks, sleep logs, alarms and settings are removed from this device. This can\'t be undone.'),
+        content: const Text(
+          'Your drinks, sleep logs, alarms and settings are removed from this device. This can\'t be undone.',
+        ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Keep')),
-          TextButton(onPressed: () => Navigator.pop(context, true), child: const Text('Delete')),
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Keep'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('Delete'),
+          ),
         ],
       ),
     );
@@ -190,7 +276,13 @@ class SettingsScreen extends StatelessWidget {
 }
 
 class _SwitchRow extends StatelessWidget {
-  const _SwitchRow({required this.title, required this.subtitle, required this.value, required this.onChanged, this.divider = false});
+  const _SwitchRow({
+    required this.title,
+    required this.subtitle,
+    required this.value,
+    required this.onChanged,
+    this.divider = false,
+  });
 
   final String title;
   final String subtitle;
@@ -203,7 +295,9 @@ class _SwitchRow extends StatelessWidget {
     final t = AqTokens.of(context);
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 8),
-      decoration: BoxDecoration(border: divider ? Border(top: BorderSide(color: t.track)) : null),
+      decoration: BoxDecoration(
+        border: divider ? Border(top: BorderSide(color: t.track)) : null,
+      ),
       child: Row(
         children: [
           Expanded(
@@ -224,7 +318,13 @@ class _SwitchRow extends StatelessWidget {
 }
 
 class _StepRow extends StatelessWidget {
-  const _StepRow({required this.title, required this.value, required this.onMinus, required this.onPlus, this.subtitle});
+  const _StepRow({
+    required this.title,
+    required this.value,
+    required this.onMinus,
+    required this.onPlus,
+    this.subtitle,
+  });
 
   final String title;
   final String value;
@@ -236,14 +336,23 @@ class _StepRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final t = AqTokens.of(context);
     Widget btn(IconData icon, String label, VoidCallback onTap) => Semantics(
-          button: true,
-          label: label,
-          excludeSemantics: true,
-          child: InkResponse(onTap: onTap, radius: 22, child: SizedBox.square(dimension: 44, child: Icon(icon, size: 18, color: t.ink))),
-        );
+      button: true,
+      label: label,
+      excludeSemantics: true,
+      child: InkResponse(
+        onTap: onTap,
+        radius: 22,
+        child: SizedBox.square(
+          dimension: 44,
+          child: Icon(icon, size: 18, color: t.ink),
+        ),
+      ),
+    );
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 6),
-      decoration: BoxDecoration(border: Border(top: BorderSide(color: t.track))),
+      decoration: BoxDecoration(
+        border: Border(top: BorderSide(color: t.track)),
+      ),
       child: Row(
         children: [
           Expanded(
@@ -251,7 +360,10 @@ class _StepRow extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(title, style: AqType.label(t, size: 14)),
-                if (subtitle != null) ...[const SizedBox(height: 2), Text(subtitle!, style: AqType.caption(t))],
+                if (subtitle != null) ...[
+                  const SizedBox(height: 2),
+                  Text(subtitle!, style: AqType.caption(t)),
+                ],
               ],
             ),
           ),
@@ -274,7 +386,9 @@ class _InfoRow extends StatelessWidget {
     final t = AqTokens.of(context);
     return Container(
       constraints: const BoxConstraints(minHeight: 48),
-      decoration: BoxDecoration(border: Border(top: BorderSide(color: t.track))),
+      decoration: BoxDecoration(
+        border: Border(top: BorderSide(color: t.track)),
+      ),
       child: Row(
         children: [
           Expanded(child: Text(title, style: AqType.label(t, size: 14))),
@@ -299,7 +413,9 @@ class _Feature extends StatelessWidget {
         children: [
           Icon(icon, size: 20, color: t.aqua),
           const SizedBox(width: 12),
-          Expanded(child: Text(text, style: AqType.body(t).copyWith(fontSize: 13))),
+          Expanded(
+            child: Text(text, style: AqType.body(t).copyWith(fontSize: 13)),
+          ),
         ],
       ),
     );

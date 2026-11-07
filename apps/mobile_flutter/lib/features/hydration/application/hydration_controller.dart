@@ -12,7 +12,12 @@ enum RhythmDayState { kept, rest, today }
 
 @immutable
 class RhythmDay {
-  const RhythmDay({required this.date, required this.state, required this.logs, required this.progress});
+  const RhythmDay({
+    required this.date,
+    required this.state,
+    required this.logs,
+    required this.progress,
+  });
   final DateTime date;
   final RhythmDayState state;
   final int logs;
@@ -67,7 +72,9 @@ class HydrationController extends ChangeNotifier {
     return ReminderPlanner(settings.policy).next(
       now: now,
       sentToday: _prefs.getInt(_kSent) ?? 0,
-      lastReminderAt: last == null ? null : DateTime.fromMillisecondsSinceEpoch(last),
+      lastReminderAt: last == null
+          ? null
+          : DateTime.fromMillisecondsSinceEpoch(last),
       lastDrinkAt: lastLog?.loggedAt,
       snoozedUntil: snoozed ? _snoozedUntil : null,
     );
@@ -75,11 +82,14 @@ class HydrationController extends ChangeNotifier {
 
   /// Short reason shown under the next-nudge time.
   String get nextNudgeReason {
-    if (settings.policy.followsClinicianPlan) return 'Following your clinician\'s plan';
+    if (settings.policy.followsClinicianPlan)
+      return 'Following your clinician\'s plan';
     if (!settings.policy.enabled) return 'Nudges are off';
     if (snoozed) return 'Snoozed for 30 min';
     final last = lastLog;
-    if (last != null && clock().difference(last.loggedAt) < settings.policy.cooldownAfterDrink) {
+    if (last != null &&
+        clock().difference(last.loggedAt) <
+            settings.policy.cooldownAfterDrink) {
       return 'Moved back after your drink';
     }
     return 'Inside your waking hours';
@@ -87,8 +97,17 @@ class HydrationController extends ChangeNotifier {
 
   Future<void> load() => _refresh();
 
-  Future<DrinkLog> log(DrinkKind kind, {int? amountMl, LogSource source = LogSource.app}) async {
-    final entry = DrinkLog.create(amountMl: amountMl ?? kind.defaultMl, kind: kind, at: clock(), source: source);
+  Future<DrinkLog> log(
+    DrinkKind kind, {
+    int? amountMl,
+    LogSource source = LogSource.app,
+  }) async {
+    final entry = DrinkLog.create(
+      amountMl: amountMl ?? kind.defaultMl,
+      kind: kind,
+      at: clock(),
+      source: source,
+    );
     await repository.add(entry);
     await _refresh();
     return entry;
@@ -117,10 +136,14 @@ class HydrationController extends ChangeNotifier {
 
   Future<void> _refresh() async {
     final now = clock();
-    _today = (await repository.logsOn(now))..sort((a, b) => a.loggedAt.compareTo(b.loggedAt));
+    _today = (await repository.logsOn(now))
+      ..sort((a, b) => a.loggedAt.compareTo(b.loggedAt));
 
     final start = DateTime(now.year, now.month, now.day - 6);
-    final range = await repository.logsBetween(start, DateTime(now.year, now.month, now.day + 1));
+    final range = await repository.logsBetween(
+      start,
+      DateTime(now.year, now.month, now.day + 1),
+    );
     final target = settings.routineLogsPerDay;
     _week = List<RhythmDay>.generate(7, (i) {
       final date = DateTime(start.year, start.month, start.day + i);
@@ -130,7 +153,9 @@ class HydrationController extends ChangeNotifier {
         date: date,
         logs: count,
         progress: target == 0 ? 1 : (count / target).clamp(0.0, 1.0),
-        state: count >= target ? RhythmDayState.kept : (isToday ? RhythmDayState.today : RhythmDayState.rest),
+        state: count >= target
+            ? RhythmDayState.kept
+            : (isToday ? RhythmDayState.today : RhythmDayState.rest),
       );
     });
 
@@ -152,7 +177,8 @@ class HydrationController extends ChangeNotifier {
     if (scheduled == null) return;
     final at = DateTime.fromMillisecondsSinceEpoch(scheduled);
     if (at.isAfter(now)) return;
-    if (_sameDate(at, now)) _prefs.setInt(_kSent, (_prefs.getInt(_kSent) ?? 0) + 1);
+    if (_sameDate(at, now))
+      _prefs.setInt(_kSent, (_prefs.getInt(_kSent) ?? 0) + 1);
     _prefs
       ..setInt(_kLast, scheduled)
       ..remove(_kScheduled);
@@ -174,7 +200,8 @@ class HydrationController extends ChangeNotifier {
     _reschedule();
   }
 
-  static bool _sameDate(DateTime a, DateTime b) => a.year == b.year && a.month == b.month && a.day == b.day;
+  static bool _sameDate(DateTime a, DateTime b) =>
+      a.year == b.year && a.month == b.month && a.day == b.day;
 
   @override
   void dispose() {

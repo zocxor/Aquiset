@@ -21,12 +21,14 @@ class AqEnvironment extends InheritedWidget {
 
   static bool motionReduced(BuildContext context) {
     final env = context.dependOnInheritedWidgetOfExactType<AqEnvironment>();
-    return MediaQuery.disableAnimationsOf(context) || (env?.reduceMotion ?? false);
+    return MediaQuery.disableAnimationsOf(context) ||
+        (env?.reduceMotion ?? false);
   }
 
   static bool transparencyReduced(BuildContext context) {
     final env = context.dependOnInheritedWidgetOfExactType<AqEnvironment>();
-    return MediaQuery.highContrastOf(context) || (env?.reduceTransparency ?? false);
+    return MediaQuery.highContrastOf(context) ||
+        (env?.reduceTransparency ?? false);
   }
 
   @override

@@ -13,8 +13,10 @@ enum DrinkKind {
   final int defaultMl;
   final String label;
 
-  static DrinkKind parse(String? name) =>
-      DrinkKind.values.firstWhere((k) => k.name == name, orElse: () => DrinkKind.custom);
+  static DrinkKind parse(String? name) => DrinkKind.values.firstWhere(
+    (k) => k.name == name,
+    orElse: () => DrinkKind.custom,
+  );
 }
 
 /// Where a log came from. Lets analytics see which platform surfaces help,
@@ -40,21 +42,28 @@ class DrinkLog {
     required DrinkKind kind,
     required DateTime at,
     LogSource source = LogSource.app,
-  }) =>
-      DrinkLog(id: newClientId(), amountMl: amountMl, kind: kind, loggedAt: at, source: source);
+  }) => DrinkLog(
+    id: newClientId(),
+    amountMl: amountMl,
+    kind: kind,
+    loggedAt: at,
+    source: source,
+  );
 
   factory DrinkLog.fromJson(Map<String, dynamic> json) => DrinkLog(
-        id: json['id'] as String,
-        amountMl: (json['amount_ml'] as num).toInt(),
-        kind: DrinkKind.parse(json['kind'] as String?),
-        loggedAt: DateTime.parse(json['logged_at'] as String).toLocal(),
-        source: LogSource.values.firstWhere(
-          (s) => s.name == json['source'],
-          orElse: () => LogSource.app,
-        ),
-        synced: json['synced'] as bool? ?? false,
-        deletedAt: json['deleted_at'] == null ? null : DateTime.parse(json['deleted_at'] as String).toLocal(),
-      );
+    id: json['id'] as String,
+    amountMl: (json['amount_ml'] as num).toInt(),
+    kind: DrinkKind.parse(json['kind'] as String?),
+    loggedAt: DateTime.parse(json['logged_at'] as String).toLocal(),
+    source: LogSource.values.firstWhere(
+      (s) => s.name == json['source'],
+      orElse: () => LogSource.app,
+    ),
+    synced: json['synced'] as bool? ?? false,
+    deletedAt: json['deleted_at'] == null
+        ? null
+        : DateTime.parse(json['deleted_at'] as String).toLocal(),
+  );
 
   final String id;
   final int amountMl;
@@ -70,24 +79,24 @@ class DrinkLog {
   bool get isDeleted => deletedAt != null;
 
   DrinkLog copyWith({bool? synced, DateTime? deletedAt}) => DrinkLog(
-        id: id,
-        amountMl: amountMl,
-        kind: kind,
-        loggedAt: loggedAt,
-        source: source,
-        synced: synced ?? this.synced,
-        deletedAt: deletedAt ?? this.deletedAt,
-      );
+    id: id,
+    amountMl: amountMl,
+    kind: kind,
+    loggedAt: loggedAt,
+    source: source,
+    synced: synced ?? this.synced,
+    deletedAt: deletedAt ?? this.deletedAt,
+  );
 
   Map<String, dynamic> toJson() => <String, dynamic>{
-        'id': id,
-        'amount_ml': amountMl,
-        'kind': kind.name,
-        'logged_at': loggedAt.toUtc().toIso8601String(),
-        'source': source.name,
-        'synced': synced,
-        'deleted_at': deletedAt?.toUtc().toIso8601String(),
-      };
+    'id': id,
+    'amount_ml': amountMl,
+    'kind': kind.name,
+    'logged_at': loggedAt.toUtc().toIso8601String(),
+    'source': source.name,
+    'synced': synced,
+    'deleted_at': deletedAt?.toUtc().toIso8601String(),
+  };
 }
 
 final Random _random = Random.secure();

@@ -20,7 +20,11 @@ class RitualsScreen extends StatefulWidget {
 class _RitualsScreenState extends State<RitualsScreen> {
   bool _doneToday = false;
   bool _paused = false;
-  final Map<String, bool> _joined = {'morning': false, 'wind': true, 'rhythm': false};
+  final Map<String, bool> _joined = {
+    'morning': false,
+    'wind': true,
+    'rhythm': false,
+  };
 
   static const List<(String, String, String)> _catalog = [
     ('morning', 'Morning reset', '3 steps · your timing'),
@@ -33,7 +37,12 @@ class _RitualsScreenState extends State<RitualsScreen> {
     final t = AqTokens.of(context);
     final day = _doneToday ? 4 : 3;
     return ListView(
-      padding: EdgeInsets.fromLTRB(16, 4, 16, 150 + MediaQuery.paddingOf(context).bottom),
+      padding: EdgeInsets.fromLTRB(
+        16,
+        4,
+        16,
+        150 + MediaQuery.paddingOf(context).bottom,
+      ),
       children: [
         RiseIn(
           child: GlassSurface(
@@ -42,7 +51,10 @@ class _RitualsScreenState extends State<RitualsScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(_paused ? 'PAUSED RITUAL' : 'ACTIVE RITUAL', style: AqType.eyebrow(t)),
+                Text(
+                  _paused ? 'PAUSED RITUAL' : 'ACTIVE RITUAL',
+                  style: AqType.eyebrow(t),
+                ),
                 const SizedBox(height: 12),
                 Row(
                   children: [
@@ -56,8 +68,17 @@ class _RitualsScreenState extends State<RitualsScreen> {
                           duration: const Duration(milliseconds: 900),
                           curve: const Cubic(0.3, 1.2, 0.4, 1),
                           builder: (context, v, _) => CustomPaint(
-                            painter: _RingPainter(progress: v, track: t.track, color: t.leaf),
-                            child: Center(child: Text('$day/5', style: AqType.display(t, size: 26))),
+                            painter: _RingPainter(
+                              progress: v,
+                              track: t.track,
+                              color: t.leaf,
+                            ),
+                            child: Center(
+                              child: Text(
+                                '$day/5',
+                                style: AqType.display(t, size: 26),
+                              ),
+                            ),
                           ),
                         ),
                       ),
@@ -67,9 +88,15 @@ class _RitualsScreenState extends State<RitualsScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('Nature pause', style: AqType.display(t, size: 30)),
+                          Text(
+                            'Nature pause',
+                            style: AqType.display(t, size: 30),
+                          ),
                           const SizedBox(height: 6),
-                          Text('Step outside for five minutes whenever it suits you. No location needed.', style: AqType.body(t)),
+                          Text(
+                            'Step outside for five minutes whenever it suits you. No location needed.',
+                            style: AqType.body(t),
+                          ),
                         ],
                       ),
                     ),
@@ -80,14 +107,18 @@ class _RitualsScreenState extends State<RitualsScreen> {
                   children: [
                     Expanded(
                       child: GlassButton(
-                        label: _doneToday ? 'Done for today' : 'Mark today done',
+                        label: _doneToday
+                            ? 'Done for today'
+                            : 'Mark today done',
                         icon: _doneToday ? Icons.check_rounded : null,
                         expand: true,
                         height: 48,
                         weight: GlassWeight.regular,
                         tint: _doneToday ? t.leafSoft : t.leaf,
                         foreground: _doneToday ? t.leaf : t.onAccent,
-                        onPressed: _paused ? null : () => setState(() => _doneToday = !_doneToday),
+                        onPressed: _paused
+                            ? null
+                            : () => setState(() => _doneToday = !_doneToday),
                       ),
                     ),
                     const SizedBox(width: 10),
@@ -110,11 +141,16 @@ class _RitualsScreenState extends State<RitualsScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Padding(padding: const EdgeInsets.only(bottom: 6), child: Text('Explore rituals', style: AqType.title(t))),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 6),
+                  child: Text('Explore rituals', style: AqType.title(t)),
+                ),
                 for (final (id, title, meta) in _catalog)
                   Container(
                     padding: const EdgeInsets.symmetric(vertical: 10),
-                    decoration: BoxDecoration(border: Border(top: BorderSide(color: t.track))),
+                    decoration: BoxDecoration(
+                      border: Border(top: BorderSide(color: t.track)),
+                    ),
                     child: Row(
                       children: [
                         Expanded(
@@ -130,8 +166,11 @@ class _RitualsScreenState extends State<RitualsScreen> {
                         GlassButton(
                           label: (_joined[id] ?? false) ? 'Joined' : 'Join',
                           foreground: (_joined[id] ?? false) ? t.leaf : null,
-                          semanticLabel: '${(_joined[id] ?? false) ? 'Leave' : 'Join'} $title',
-                          onPressed: () => setState(() => _joined[id] = !(_joined[id] ?? false)),
+                          semanticLabel:
+                              '${(_joined[id] ?? false) ? 'Leave' : 'Join'} $title',
+                          onPressed: () => setState(
+                            () => _joined[id] = !(_joined[id] ?? false),
+                          ),
                         ),
                       ],
                     ),
@@ -145,11 +184,34 @@ class _RitualsScreenState extends State<RitualsScreen> {
           index: 2,
           child: Row(
             children: [
-              Expanded(child: _Badge(icon: Icons.eco_outlined, title: 'First pause', note: 'Unlocked', color: t.leaf, soft: t.leafSoft)),
+              Expanded(
+                child: _Badge(
+                  icon: Icons.eco_outlined,
+                  title: 'First pause',
+                  note: 'Unlocked',
+                  color: t.leaf,
+                  soft: t.leafSoft,
+                ),
+              ),
               const SizedBox(width: 10),
-              Expanded(child: _Badge(icon: Icons.water_drop_outlined, title: 'Easy rhythm', note: 'Unlocked', color: t.aqua, soft: t.aquaSoft)),
+              Expanded(
+                child: _Badge(
+                  icon: Icons.water_drop_outlined,
+                  title: 'Easy rhythm',
+                  note: 'Unlocked',
+                  color: t.aqua,
+                  soft: t.aquaSoft,
+                ),
+              ),
               const SizedBox(width: 10),
-              const Expanded(child: _Badge(icon: Icons.lock_outline_rounded, title: 'Steady week', note: 'Any 4 days', locked: true)),
+              const Expanded(
+                child: _Badge(
+                  icon: Icons.lock_outline_rounded,
+                  title: 'Steady week',
+                  note: 'Any 4 days',
+                  locked: true,
+                ),
+              ),
             ],
           ),
         ),
@@ -159,7 +221,14 @@ class _RitualsScreenState extends State<RitualsScreen> {
 }
 
 class _Badge extends StatelessWidget {
-  const _Badge({required this.icon, required this.title, required this.note, this.color, this.soft, this.locked = false});
+  const _Badge({
+    required this.icon,
+    required this.title,
+    required this.note,
+    this.color,
+    this.soft,
+    this.locked = false,
+  });
 
   final IconData icon;
   final String title;
@@ -191,7 +260,11 @@ class _Badge extends StatelessWidget {
               child: Icon(icon, size: 20, color: locked ? t.ink3 : color),
             ),
             const SizedBox(height: 8),
-            Text(title, style: AqType.label(t, size: 12.5), textAlign: TextAlign.center),
+            Text(
+              title,
+              style: AqType.label(t, size: 12.5),
+              textAlign: TextAlign.center,
+            ),
             const SizedBox(height: 2),
             Text(note, style: AqType.caption(t).copyWith(fontSize: 11)),
           ],
@@ -202,7 +275,11 @@ class _Badge extends StatelessWidget {
 }
 
 class _RingPainter extends CustomPainter {
-  const _RingPainter({required this.progress, required this.track, required this.color});
+  const _RingPainter({
+    required this.progress,
+    required this.track,
+    required this.color,
+  });
 
   final double progress;
   final Color track;
@@ -210,16 +287,27 @@ class _RingPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final rect = Rect.fromCircle(center: size.center(Offset.zero), radius: size.width / 2 - 8);
+    final rect = Rect.fromCircle(
+      center: size.center(Offset.zero),
+      radius: size.width / 2 - 8,
+    );
     final base = Paint()
       ..style = PaintingStyle.stroke
       ..strokeWidth = 7
       ..strokeCap = StrokeCap.round;
     canvas.drawArc(rect, 0, math.pi * 2, false, base..color = track);
-    canvas.drawArc(rect, -math.pi / 2, math.pi * 2 * progress.clamp(0.0, 1.0), false, base..color = color);
+    canvas.drawArc(
+      rect,
+      -math.pi / 2,
+      math.pi * 2 * progress.clamp(0.0, 1.0),
+      false,
+      base..color = color,
+    );
   }
 
   @override
   bool shouldRepaint(_RingPainter oldDelegate) =>
-      oldDelegate.progress != progress || oldDelegate.color != color || oldDelegate.track != track;
+      oldDelegate.progress != progress ||
+      oldDelegate.color != color ||
+      oldDelegate.track != track;
 }

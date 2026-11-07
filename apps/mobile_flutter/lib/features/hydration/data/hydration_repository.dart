@@ -20,7 +20,10 @@ abstract interface class HydrationRepository {
 /// reads and no native database setup. ADR-0004 moves this to SQLite (drift)
 /// once multi-month history screens land.
 class PrefsHydrationRepository implements HydrationRepository {
-  PrefsHydrationRepository(this._prefs, {this.retention = const Duration(days: 400)});
+  PrefsHydrationRepository(
+    this._prefs, {
+    this.retention = const Duration(days: 400),
+  });
 
   static const String _key = 'hydration.logs.v1';
 
@@ -31,14 +34,20 @@ class PrefsHydrationRepository implements HydrationRepository {
     final raw = _prefs.getString(_key);
     if (raw == null || raw.isEmpty) return <DrinkLog>[];
     final decoded = jsonDecode(raw) as List<dynamic>;
-    return decoded.map((e) => DrinkLog.fromJson(e as Map<String, dynamic>)).toList();
+    return decoded
+        .map((e) => DrinkLog.fromJson(e as Map<String, dynamic>))
+        .toList();
   }
 
   Future<void> _save(List<DrinkLog> logs) {
     final cutoff = DateTime.now().subtract(retention);
-    final kept = logs.where((l) => l.loggedAt.isAfter(cutoff) || !l.synced).toList()
-      ..sort((a, b) => a.loggedAt.compareTo(b.loggedAt));
-    return _prefs.setString(_key, jsonEncode(kept.map((l) => l.toJson()).toList()));
+    final kept =
+        logs.where((l) => l.loggedAt.isAfter(cutoff) || !l.synced).toList()
+          ..sort((a, b) => a.loggedAt.compareTo(b.loggedAt));
+    return _prefs.setString(
+      _key,
+      jsonEncode(kept.map((l) => l.toJson()).toList()),
+    );
   }
 
   @override
@@ -48,9 +57,15 @@ class PrefsHydrationRepository implements HydrationRepository {
   }
 
   @override
-  Future<List<DrinkLog>> logsBetween(DateTime start, DateTime end) async => _all()
-      .where((l) => !l.isDeleted && !l.loggedAt.isBefore(start) && l.loggedAt.isBefore(end))
-      .toList();
+  Future<List<DrinkLog>> logsBetween(DateTime start, DateTime end) async =>
+      _all()
+          .where(
+            (l) =>
+                !l.isDeleted &&
+                !l.loggedAt.isBefore(start) &&
+                l.loggedAt.isBefore(end),
+          )
+          .toList();
 
   @override
   Future<void> add(DrinkLog log) async {
@@ -74,7 +89,8 @@ class PrefsHydrationRepository implements HydrationRepository {
   }
 
   @override
-  Future<List<DrinkLog>> pendingSync() async => _all().where((l) => !l.synced).toList();
+  Future<List<DrinkLog>> pendingSync() async =>
+      _all().where((l) => !l.synced).toList();
 
   @override
   Future<void> markSynced(Iterable<String> ids) async {

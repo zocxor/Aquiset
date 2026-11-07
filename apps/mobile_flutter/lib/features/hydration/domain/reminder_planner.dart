@@ -48,18 +48,17 @@ class ReminderPolicy {
     Duration? cooldownAfterDrink,
     int? dailyCap,
     bool? followsClinicianPlan,
-  }) =>
-      ReminderPolicy(
-        enabled: enabled ?? this.enabled,
-        wakeStart: wakeStart,
-        wakeEnd: wakeEnd,
-        quietStart: quietStart ?? this.quietStart,
-        quietEnd: quietEnd ?? this.quietEnd,
-        interval: interval ?? this.interval,
-        cooldownAfterDrink: cooldownAfterDrink ?? this.cooldownAfterDrink,
-        dailyCap: dailyCap ?? this.dailyCap,
-        followsClinicianPlan: followsClinicianPlan ?? this.followsClinicianPlan,
-      );
+  }) => ReminderPolicy(
+    enabled: enabled ?? this.enabled,
+    wakeStart: wakeStart,
+    wakeEnd: wakeEnd,
+    quietStart: quietStart ?? this.quietStart,
+    quietEnd: quietEnd ?? this.quietEnd,
+    interval: interval ?? this.interval,
+    cooldownAfterDrink: cooldownAfterDrink ?? this.cooldownAfterDrink,
+    dailyCap: dailyCap ?? this.dailyCap,
+    followsClinicianPlan: followsClinicianPlan ?? this.followsClinicianPlan,
+  );
 }
 
 /// Pure scheduling rules from the blueprint (section 05, "Reminder logic"):
@@ -85,8 +84,10 @@ class ReminderPlanner {
     if (!policy.enabled || policy.followsClinicianPlan) return null;
 
     var candidate = _ceilToMinute(now);
-    if (lastReminderAt != null) candidate = _later(candidate, lastReminderAt.add(policy.interval));
-    if (lastDrinkAt != null) candidate = _later(candidate, lastDrinkAt.add(policy.cooldownAfterDrink));
+    if (lastReminderAt != null)
+      candidate = _later(candidate, lastReminderAt.add(policy.interval));
+    if (lastDrinkAt != null)
+      candidate = _later(candidate, lastDrinkAt.add(policy.cooldownAfterDrink));
     if (snoozedUntil != null) candidate = _later(candidate, snoozedUntil);
     candidate = _ceilToMinute(candidate);
 
@@ -108,21 +109,31 @@ class ReminderPlanner {
 
   bool _allowed(DateTime t) {
     final m = MinuteOfDay.of(t);
-    return m.isWithin(policy.wakeStart, policy.wakeEnd) && !m.isWithin(policy.quietStart, policy.quietEnd);
+    return m.isWithin(policy.wakeStart, policy.wakeEnd) &&
+        !m.isWithin(policy.quietStart, policy.quietEnd);
   }
 
   /// Jumps to the next boundary that could be allowed, in wall-clock time so
   /// daylight-saving changes don't shift the target.
   DateTime _advance(DateTime t) {
     final m = MinuteOfDay.of(t);
-    final target = m.isWithin(policy.wakeStart, policy.wakeEnd) ? policy.quietEnd : policy.wakeStart;
+    final target = m.isWithin(policy.wakeStart, policy.wakeEnd)
+        ? policy.quietEnd
+        : policy.wakeStart;
     final minutes = m.minutesUntil(target);
-    return DateTime(t.year, t.month, t.day, t.hour, t.minute + (minutes == 0 ? 1 : minutes));
+    return DateTime(
+      t.year,
+      t.month,
+      t.day,
+      t.hour,
+      t.minute + (minutes == 0 ? 1 : minutes),
+    );
   }
 
   static DateTime _later(DateTime a, DateTime b) => b.isAfter(a) ? b : a;
 
-  static bool _sameDate(DateTime a, DateTime b) => a.year == b.year && a.month == b.month && a.day == b.day;
+  static bool _sameDate(DateTime a, DateTime b) =>
+      a.year == b.year && a.month == b.month && a.day == b.day;
 
   static DateTime _ceilToMinute(DateTime t) {
     if (t.second == 0 && t.millisecond == 0 && t.microsecond == 0) return t;

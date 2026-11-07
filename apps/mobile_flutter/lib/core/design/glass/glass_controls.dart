@@ -43,17 +43,22 @@ class _PressScaleState extends State<PressScale> {
 
 /// Card: regular glass, 28 radius, 16 padding.
 class GlassCard extends StatelessWidget {
-  const GlassCard({super.key, required this.child, this.padding = const EdgeInsets.all(16), this.radius = 28});
+  const GlassCard({
+    super.key,
+    required this.child,
+    this.padding = const EdgeInsets.all(16),
+    this.radius = 28,
+  });
   final Widget child;
   final EdgeInsetsGeometry padding;
   final double radius;
 
   @override
   Widget build(BuildContext context) => GlassSurface(
-        borderRadius: BorderRadius.circular(radius),
-        padding: padding,
-        child: child,
-      );
+    borderRadius: BorderRadius.circular(radius),
+    padding: padding,
+    child: child,
+  );
 }
 
 /// Pill button made of glass. Minimum 44 pt tall.
@@ -110,15 +115,27 @@ class GlassButton extends StatelessWidget {
                     },
               borderRadius: radius,
               child: ConstrainedBox(
-                constraints: BoxConstraints(minHeight: height, minWidth: height),
+                constraints: BoxConstraints(
+                  minHeight: height,
+                  minWidth: height,
+                ),
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: Row(
                     mainAxisSize: expand ? MainAxisSize.max : MainAxisSize.min,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      if (icon != null) ...[Icon(icon, size: 18, color: fg), const SizedBox(width: 8)],
-                      Flexible(child: Text(label, style: AqType.label(t, color: fg), overflow: TextOverflow.ellipsis)),
+                      if (icon != null) ...[
+                        Icon(icon, size: 18, color: fg),
+                        const SizedBox(width: 8),
+                      ],
+                      Flexible(
+                        child: Text(
+                          label,
+                          style: AqType.label(t, color: fg),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -175,7 +192,11 @@ class GlassIconButton extends StatelessWidget {
               },
               child: SizedBox.square(
                 dimension: size,
-                child: Center(child: child ?? Icon(icon, size: size * 0.42, color: color ?? t.ink)),
+                child: Center(
+                  child:
+                      child ??
+                      Icon(icon, size: size * 0.42, color: color ?? t.ink),
+                ),
               ),
             ),
           ),
@@ -188,7 +209,12 @@ class GlassIconButton extends StatelessWidget {
 /// On/off switch with a springy thumb. Position is the primary signal, so
 /// state never relies on colour alone.
 class GlassSwitch extends StatelessWidget {
-  const GlassSwitch({super.key, required this.value, required this.onChanged, required this.semanticLabel});
+  const GlassSwitch({
+    super.key,
+    required this.value,
+    required this.onChanged,
+    required this.semanticLabel,
+  });
 
   final bool value;
   final ValueChanged<bool> onChanged;
@@ -234,7 +260,13 @@ class GlassSwitch extends StatelessWidget {
                   decoration: const BoxDecoration(
                     color: Colors.white,
                     shape: BoxShape.circle,
-                    boxShadow: [BoxShadow(color: Color(0x47000000), blurRadius: 6, offset: Offset(0, 2))],
+                    boxShadow: [
+                      BoxShadow(
+                        color: Color(0x47000000),
+                        blurRadius: 6,
+                        offset: Offset(0, 2),
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -265,7 +297,9 @@ class GlassSegmented<T> extends StatelessWidget {
   Widget build(BuildContext context) {
     final t = AqTokens.of(context);
     final reduced = AqEnvironment.motionReduced(context);
-    final index = options.indexWhere((o) => o.$1 == selected).clamp(0, options.length - 1);
+    final index = options
+        .indexWhere((o) => o.$1 == selected)
+        .clamp(0, options.length - 1);
     return Semantics(
       container: true,
       label: semanticLabel,
@@ -282,7 +316,9 @@ class GlassSegmented<T> extends StatelessWidget {
               return Stack(
                 children: [
                   AnimatedPositioned(
-                    duration: reduced ? Duration.zero : const Duration(milliseconds: 550),
+                    duration: reduced
+                        ? Duration.zero
+                        : const Duration(milliseconds: 550),
                     curve: AqMotion.fill,
                     left: 4 + index * w,
                     top: 4,
@@ -314,7 +350,10 @@ class GlassSegmented<T> extends StatelessWidget {
                               child: Center(
                                 child: Text(
                                   label,
-                                  style: AqType.label(t, color: value == selected ? t.ink : t.ink3),
+                                  style: AqType.label(
+                                    t,
+                                    color: value == selected ? t.ink : t.ink3,
+                                  ),
                                 ),
                               ),
                             ),
@@ -334,7 +373,13 @@ class GlassSegmented<T> extends StatelessWidget {
 
 /// Floating confirmation with an optional action, used for "Logged 250 ml · Undo".
 class GlassToast extends StatelessWidget {
-  const GlassToast({super.key, required this.message, this.actionLabel, this.onAction, this.icon = Icons.water_drop_outlined});
+  const GlassToast({
+    super.key,
+    required this.message,
+    this.actionLabel,
+    this.onAction,
+    this.icon = Icons.water_drop_outlined,
+  });
 
   final String message;
   final String? actionLabel;
@@ -361,8 +406,14 @@ class GlassToast extends StatelessWidget {
               if (actionLabel != null && onAction != null)
                 TextButton(
                   onPressed: onAction,
-                  style: TextButton.styleFrom(minimumSize: const Size(44, 44), foregroundColor: t.aqua),
-                  child: Text(actionLabel!, style: AqType.label(t, size: 13.5, color: t.aqua)),
+                  style: TextButton.styleFrom(
+                    minimumSize: const Size(44, 44),
+                    foregroundColor: t.aqua,
+                  ),
+                  child: Text(
+                    actionLabel!,
+                    style: AqType.label(t, size: 13.5, color: t.aqua),
+                  ),
                 )
               else
                 const SizedBox(width: 16),

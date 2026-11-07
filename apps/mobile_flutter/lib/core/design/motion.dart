@@ -5,13 +5,19 @@ import 'package:flutter/physics.dart';
 /// curves for state changes, nothing that loops except the water surface.
 abstract final class AqMotion {
   /// Leading edge of the nav lens: quick and firm.
-  static const SpringDescription lensLead =
-      SpringDescription(mass: 1, stiffness: 520, damping: 30);
+  static const SpringDescription lensLead = SpringDescription(
+    mass: 1,
+    stiffness: 520,
+    damping: 30,
+  );
 
   /// Trailing edge of the nav lens: softer, so the lens stretches like a
   /// droplet and then settles.
-  static const SpringDescription lensTrail =
-      SpringDescription(mass: 1, stiffness: 240, damping: 24);
+  static const SpringDescription lensTrail = SpringDescription(
+    mass: 1,
+    stiffness: 240,
+    damping: 24,
+  );
 
   /// Cards rising in on first show.
   static const Curve rise = Cubic(0.2, 0.9, 0.25, 1.12);

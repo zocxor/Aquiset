@@ -3,7 +3,10 @@ import 'package:aquiset/features/sleep/domain/sleep_schedule.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  final schedule = SleepSchedule(bedtime: MinuteOfDay.hm(23, 0), wake: MinuteOfDay.hm(6, 45));
+  final schedule = SleepSchedule(
+    bedtime: MinuteOfDay.hm(23, 0),
+    wake: MinuteOfDay.hm(6, 45),
+  );
 
   test('planned rest crosses midnight', () {
     expect(schedule.plannedRest, const Duration(hours: 7, minutes: 45));
@@ -20,9 +23,15 @@ void main() {
   });
 
   test('shifts that would make rest under 4 h or over 12 h are ignored', () {
-    final short = SleepSchedule(bedtime: MinuteOfDay.hm(2, 30), wake: MinuteOfDay.hm(6, 45));
+    final short = SleepSchedule(
+      bedtime: MinuteOfDay.hm(2, 30),
+      wake: MinuteOfDay.hm(6, 45),
+    );
     expect(identical(short.shifted(bedtimeBy: 30), short), isTrue);
-    final long = SleepSchedule(bedtime: MinuteOfDay.hm(19, 0), wake: MinuteOfDay.hm(6, 45));
+    final long = SleepSchedule(
+      bedtime: MinuteOfDay.hm(19, 0),
+      wake: MinuteOfDay.hm(6, 45),
+    );
     expect(identical(long.shifted(bedtimeBy: -30), long), isTrue);
   });
 

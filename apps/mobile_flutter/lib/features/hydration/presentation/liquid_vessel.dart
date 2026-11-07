@@ -9,7 +9,12 @@ import '../../../core/design/tokens.dart';
 /// Glass tumbler whose water level rises on a spring after each log, with a
 /// slow two-layer surface wave. Static under reduced motion.
 class LiquidVessel extends StatefulWidget {
-  const LiquidVessel({super.key, required this.progress, required this.semanticLabel, this.size = const Size(116, 188)});
+  const LiquidVessel({
+    super.key,
+    required this.progress,
+    required this.semanticLabel,
+    this.size = const Size(116, 188),
+  });
 
   /// 0–1 of the person's own goal. Above 1 simply shows full.
   final double progress;
@@ -20,8 +25,12 @@ class LiquidVessel extends StatefulWidget {
   State<LiquidVessel> createState() => _LiquidVesselState();
 }
 
-class _LiquidVesselState extends State<LiquidVessel> with SingleTickerProviderStateMixin {
-  late final AnimationController _wave = AnimationController(vsync: this, duration: AqMotion.wavePeriod);
+class _LiquidVesselState extends State<LiquidVessel>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _wave = AnimationController(
+    vsync: this,
+    duration: AqMotion.wavePeriod,
+  );
   bool? _reduced;
 
   @override
@@ -59,7 +68,11 @@ class _LiquidVesselState extends State<LiquidVessel> with SingleTickerProviderSt
           animation: _wave,
           builder: (context, _) => CustomPaint(
             size: widget.size,
-            painter: _VesselPainter(tokens: t, level: level, phase: _wave.value),
+            painter: _VesselPainter(
+              tokens: t,
+              level: level,
+              phase: _wave.value,
+            ),
           ),
         ),
       ),
@@ -68,7 +81,11 @@ class _LiquidVesselState extends State<LiquidVessel> with SingleTickerProviderSt
 }
 
 class _VesselPainter extends CustomPainter {
-  _VesselPainter({required this.tokens, required this.level, required this.phase});
+  _VesselPainter({
+    required this.tokens,
+    required this.level,
+    required this.phase,
+  });
 
   final AqTokens tokens;
   final double level;
@@ -115,7 +132,10 @@ class _VesselPainter extends CustomPainter {
         ..shader = LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
-          colors: [Colors.white.withValues(alpha: 0.8), Colors.white.withValues(alpha: 0)],
+          colors: [
+            Colors.white.withValues(alpha: 0.8),
+            Colors.white.withValues(alpha: 0),
+          ],
         ).createShader(shine),
     );
 
@@ -126,7 +146,11 @@ class _VesselPainter extends CustomPainter {
       ..strokeCap = StrokeCap.round;
     for (final (frac, len) in const [(0.25, 12.0), (0.5, 18.0), (0.75, 12.0)]) {
       final y = size.height * frac;
-      canvas.drawLine(Offset(size.width - 12 - len, y), Offset(size.width - 12, y), mark);
+      canvas.drawLine(
+        Offset(size.width - 12 - len, y),
+        Offset(size.width - 12, y),
+        mark,
+      );
     }
 
     canvas.restore();
@@ -143,7 +167,10 @@ class _VesselPainter extends CustomPainter {
     final wavelength = size.width * 0.9;
     final path = Path()..moveTo(0, size.height);
     for (double x = 0; x <= size.width; x += 3) {
-      path.lineTo(x, top + amplitude * math.sin(x / wavelength * math.pi * 2 + angle));
+      path.lineTo(
+        x,
+        top + amplitude * math.sin(x / wavelength * math.pi * 2 + angle),
+      );
     }
     return path
       ..lineTo(size.width, size.height)
@@ -152,5 +179,7 @@ class _VesselPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(_VesselPainter oldDelegate) =>
-      oldDelegate.level != level || oldDelegate.phase != phase || oldDelegate.tokens != tokens;
+      oldDelegate.level != level ||
+      oldDelegate.phase != phase ||
+      oldDelegate.tokens != tokens;
 }

@@ -41,11 +41,16 @@ class LiquidGlassNavBar extends StatefulWidget {
   State<LiquidGlassNavBar> createState() => _LiquidGlassNavBarState();
 }
 
-class _LiquidGlassNavBarState extends State<LiquidGlassNavBar> with TickerProviderStateMixin {
-  late final AnimationController _left =
-      AnimationController.unbounded(vsync: this, value: widget.index.toDouble());
-  late final AnimationController _right =
-      AnimationController.unbounded(vsync: this, value: widget.index.toDouble());
+class _LiquidGlassNavBarState extends State<LiquidGlassNavBar>
+    with TickerProviderStateMixin {
+  late final AnimationController _left = AnimationController.unbounded(
+    vsync: this,
+    value: widget.index.toDouble(),
+  );
+  late final AnimationController _right = AnimationController.unbounded(
+    vsync: this,
+    value: widget.index.toDouble(),
+  );
   bool _reduceMotion = false;
 
   @override
@@ -61,8 +66,12 @@ class _LiquidGlassNavBarState extends State<LiquidGlassNavBar> with TickerProvid
     final movingRight = target > _left.value;
     final lead = movingRight ? _right : _left;
     final trail = movingRight ? _left : _right;
-    lead.animateWith(SpringSimulation(AqMotion.lensLead, lead.value, target, lead.velocity));
-    trail.animateWith(SpringSimulation(AqMotion.lensTrail, trail.value, target, trail.velocity));
+    lead.animateWith(
+      SpringSimulation(AqMotion.lensLead, lead.value, target, lead.velocity),
+    );
+    trail.animateWith(
+      SpringSimulation(AqMotion.lensTrail, trail.value, target, trail.velocity),
+    );
   }
 
   @override
@@ -139,7 +148,11 @@ class _LiquidGlassNavBarState extends State<LiquidGlassNavBar> with TickerProvid
 }
 
 class _NavButton extends StatelessWidget {
-  const _NavButton({required this.item, required this.selected, required this.onTap});
+  const _NavButton({
+    required this.item,
+    required this.selected,
+    required this.onTap,
+  });
 
   final LiquidNavItem item;
   final bool selected;
@@ -167,7 +180,14 @@ class _NavButton extends StatelessWidget {
             children: [
               Icon(item.icon, size: 22, color: Color.lerp(t.ink3, t.aqua, v)),
               const SizedBox(height: 3),
-              Text(item.label, style: AqType.label(t, size: 11, color: Color.lerp(t.ink3, t.ink, v))),
+              Text(
+                item.label,
+                style: AqType.label(
+                  t,
+                  size: 11,
+                  color: Color.lerp(t.ink3, t.ink, v),
+                ),
+              ),
             ],
           ),
         ),

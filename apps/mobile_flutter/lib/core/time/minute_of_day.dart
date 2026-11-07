@@ -8,7 +8,8 @@ import 'package:flutter/foundation.dart';
 class MinuteOfDay implements Comparable<MinuteOfDay> {
   const MinuteOfDay(this.value) : assert(value >= 0 && value < minutesPerDay);
 
-  factory MinuteOfDay.hm(int hour, int minute) => MinuteOfDay.wrap(hour * 60 + minute);
+  factory MinuteOfDay.hm(int hour, int minute) =>
+      MinuteOfDay.wrap(hour * 60 + minute);
 
   /// Normalises any integer (negative or above a day) into 0..1439.
   factory MinuteOfDay.wrap(int minutes) =>
@@ -41,17 +42,21 @@ class MinuteOfDay implements Comparable<MinuteOfDay> {
   /// (start == end) contains nothing.
   bool isWithin(MinuteOfDay start, MinuteOfDay end) {
     if (start.value == end.value) return false;
-    if (start.value < end.value) return value >= start.value && value < end.value;
+    if (start.value < end.value)
+      return value >= start.value && value < end.value;
     return value >= start.value || value < end.value;
   }
 
   /// The [DateTime] on the same local date as [day] at this time.
-  DateTime onDate(DateTime day) => DateTime(day.year, day.month, day.day, hour, minute);
+  DateTime onDate(DateTime day) =>
+      DateTime(day.year, day.month, day.day, hour, minute);
 
   /// The next wall-clock occurrence of this time strictly after [now].
   DateTime nextAfter(DateTime now) {
     final today = onDate(now);
-    return today.isAfter(now) ? today : DateTime(now.year, now.month, now.day + 1, hour, minute);
+    return today.isAfter(now)
+        ? today
+        : DateTime(now.year, now.month, now.day + 1, hour, minute);
   }
 
   /// 12-hour label such as "6:45 am".
@@ -65,13 +70,15 @@ class MinuteOfDay implements Comparable<MinuteOfDay> {
   int compareTo(MinuteOfDay other) => value.compareTo(other.value);
 
   @override
-  bool operator ==(Object other) => other is MinuteOfDay && other.value == value;
+  bool operator ==(Object other) =>
+      other is MinuteOfDay && other.value == value;
 
   @override
   int get hashCode => value.hashCode;
 
   @override
-  String toString() => 'MinuteOfDay(${hour.toString().padLeft(2, '0')}:${minute.toString().padLeft(2, '0')})';
+  String toString() =>
+      'MinuteOfDay(${hour.toString().padLeft(2, '0')}:${minute.toString().padLeft(2, '0')})';
 }
 
 /// Injectable clock so reminder and sleep logic is testable.

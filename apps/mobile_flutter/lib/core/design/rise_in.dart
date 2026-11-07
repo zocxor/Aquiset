@@ -29,7 +29,11 @@ class _RiseInState extends State<RiseIn> with SingleTickerProviderStateMixin {
     _controller = AnimationController(vsync: this, duration: total);
     _progress = CurvedAnimation(
       parent: _controller,
-      curve: Interval(delay.inMicroseconds / total.inMicroseconds, 1, curve: AqMotion.rise),
+      curve: Interval(
+        delay.inMicroseconds / total.inMicroseconds,
+        1,
+        curve: AqMotion.rise,
+      ),
     );
   }
 
@@ -53,17 +57,17 @@ class _RiseInState extends State<RiseIn> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) => AnimatedBuilder(
-        animation: _progress,
-        builder: (context, child) {
-          final v = _progress.value;
-          return Opacity(
-            opacity: v.clamp(0.0, 1.0),
-            child: Transform.translate(
-              offset: Offset(0, (1 - v) * 14),
-              child: Transform.scale(scale: 0.985 + 0.015 * v, child: child),
-            ),
-          );
-        },
-        child: widget.child,
+    animation: _progress,
+    builder: (context, child) {
+      final v = _progress.value;
+      return Opacity(
+        opacity: v.clamp(0.0, 1.0),
+        child: Transform.translate(
+          offset: Offset(0, (1 - v) * 14),
+          child: Transform.scale(scale: 0.985 + 0.015 * v, child: child),
+        ),
       );
+    },
+    child: widget.child,
+  );
 }

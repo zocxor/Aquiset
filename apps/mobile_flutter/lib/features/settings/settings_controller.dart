@@ -9,7 +9,10 @@ enum ThemePref { system, day, night }
 
 class SettingsController extends ChangeNotifier {
   SettingsController(this._prefs) {
-    _theme = ThemePref.values.firstWhere((p) => p.name == _prefs.getString(_kTheme), orElse: () => ThemePref.system);
+    _theme = ThemePref.values.firstWhere(
+      (p) => p.name == _prefs.getString(_kTheme),
+      orElse: () => ThemePref.system,
+    );
     _reduceMotion = _prefs.getBool(_kMotion) ?? false;
     _reduceTransparency = _prefs.getBool(_kTransparency) ?? false;
     _goalMl = _prefs.getInt(_kGoal) ?? 2000;
@@ -59,10 +62,10 @@ class SettingsController extends ChangeNotifier {
   ReminderPolicy get policy => _policy;
 
   ThemeMode get themeMode => switch (_theme) {
-        ThemePref.system => ThemeMode.system,
-        ThemePref.day => ThemeMode.light,
-        ThemePref.night => ThemeMode.dark,
-      };
+    ThemePref.system => ThemeMode.system,
+    ThemePref.day => ThemeMode.light,
+    ThemePref.night => ThemeMode.dark,
+  };
 
   void setTheme(ThemePref value) {
     _theme = value;

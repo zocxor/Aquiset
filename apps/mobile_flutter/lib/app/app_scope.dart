@@ -76,19 +76,30 @@ class AppServices {
     _scheduleSnapshot();
 
     _actionSub = platform.actions.listen(handleAction);
-    _externalSub = platform.externalLogsAvailable.listen((_) => hydration.absorbExternalLogs());
+    _externalSub = platform.externalLogsAvailable.listen(
+      (_) => hydration.absorbExternalLogs(),
+    );
     final launch = await platform.takeLaunchAction();
     if (launch != null) await handleAction(launch);
 
-    _lifecycle = AppLifecycleListener(onResume: () async {
-      final added = await hydration.absorbExternalLogs();
-      if (added > 0) showToast('Added $added ${added == 1 ? 'drink' : 'drinks'} from your widget');
-      await sleep.refreshCapability();
-    });
+    _lifecycle = AppLifecycleListener(
+      onResume: () async {
+        final added = await hydration.absorbExternalLogs();
+        if (added > 0)
+          showToast(
+            'Added $added ${added == 1 ? 'drink' : 'drinks'} from your widget',
+          );
+        await sleep.refreshCapability();
+      },
+    );
   }
 
   /// Logs a drink from anywhere in the app and offers Undo.
-  Future<void> quickLog(DrinkKind kind, {int? amountMl, LogSource source = LogSource.app}) async {
+  Future<void> quickLog(
+    DrinkKind kind, {
+    int? amountMl,
+    LogSource source = LogSource.app,
+  }) async {
     final entry = await hydration.log(kind, amountMl: amountMl, source: source);
     showToast(
       'Logged ${entry.amountMl} ml · ${kind == DrinkKind.custom ? 'drink' : kind.label.toLowerCase()}',
@@ -103,47 +114,70 @@ class AppServices {
   Future<void> handleAction(PlatformAction action) async {
     switch (action) {
       case LogDrinkAction(:final ml, :final source):
-        final kind = DrinkKind.values.firstWhere((k) => k.defaultMl == ml, orElse: () => DrinkKind.custom);
+        final kind = DrinkKind.values.firstWhere(
+          (k) => k.defaultMl == ml,
+          orElse: () => DrinkKind.custom,
+        );
         await quickLog(kind, amountMl: ml, source: source);
       case StartWindDownAction():
         tab.value = AppTab.sleep;
         await sleep.startWindDown();
       case OpenTabAction(:final tab):
-        this.tab.value = AppTab.values.firstWhere((t) => t.name == tab, orElse: () => AppTab.hydrate);
+        this.tab.value = AppTab.values.firstWhere(
+          (t) => t.name == tab,
+          orElse: () => AppTab.hydrate,
+        );
     }
   }
 
-  void showToast(String message, {String? actionLabel, VoidCallback? onAction}) {
+  void showToast(
+    String message, {
+    String? actionLabel,
+    VoidCallback? onAction,
+  }) {
     _toastTimer?.cancel();
-    toast.value = ToastData(message, actionLabel: actionLabel, onAction: onAction);
-    _toastTimer = Timer(const Duration(milliseconds: 3600), () => toast.value = null);
+    toast.value = ToastData(
+      message,
+      actionLabel: actionLabel,
+      onAction: onAction,
+    );
+    _toastTimer = Timer(
+      const Duration(milliseconds: 3600),
+      () => toast.value = null,
+    );
   }
 
   void _scheduleSnapshot() {
     _snapshotDebounce?.cancel();
-    _snapshotDebounce = Timer(const Duration(milliseconds: 300), _publishSnapshot);
+    _snapshotDebounce = Timer(
+      const Duration(milliseconds: 300),
+      _publishSnapshot,
+    );
   }
 
   Future<void> _publishSnapshot() {
     final s = sleep.schedule;
     final systemNight =
-        WidgetsBinding.instance.platformDispatcher.platformBrightness == Brightness.dark;
-    return platform.publishSnapshot(RhythmSnapshot(
-      totalMl: hydration.totalMl,
-      goalMl: hydration.goalMl,
-      drinksToday: hydration.today.length,
-      nextNudge: hydration.nextNudge,
-      bedtimeLabel: s.bedtime.format12(),
-      wakeLabel: s.wake.format12(),
-      windDownLabel: s.windDownStart.format12(),
-      alarmOn: sleep.alarmOn,
-      night: switch (settings.theme) {
-        ThemePref.night => true,
-        ThemePref.day => false,
-        ThemePref.system => systemNight,
-      },
-      updatedAt: DateTime.now(),
-    ));
+        WidgetsBinding.instance.platformDispatcher.platformBrightness ==
+        Brightness.dark;
+    return platform.publishSnapshot(
+      RhythmSnapshot(
+        totalMl: hydration.totalMl,
+        goalMl: hydration.goalMl,
+        drinksToday: hydration.today.length,
+        nextNudge: hydration.nextNudge,
+        bedtimeLabel: s.bedtime.format12(),
+        wakeLabel: s.wake.format12(),
+        windDownLabel: s.windDownStart.format12(),
+        alarmOn: sleep.alarmOn,
+        night: switch (settings.theme) {
+          ThemePref.night => true,
+          ThemePref.day => false,
+          ThemePref.system => systemNight,
+        },
+        updatedAt: DateTime.now(),
+      ),
+    );
   }
 
   void dispose() {
@@ -168,5 +202,6 @@ class AppScope extends InheritedWidget {
   }
 
   @override
-  bool updateShouldNotify(AppScope oldWidget) => !identical(oldWidget.services, services);
+  bool updateShouldNotify(AppScope oldWidget) =>
+      !identical(oldWidget.services, services);
 }

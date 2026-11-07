@@ -14,8 +14,11 @@ class NatureBackdrop extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => RepaintBoundary(
-        child: CustomPaint(painter: _NaturePainter(AqTokens.of(context)), child: const SizedBox.expand()),
-      );
+    child: CustomPaint(
+      painter: _NaturePainter(AqTokens.of(context)),
+      child: const SizedBox.expand(),
+    ),
+  );
 }
 
 class _NaturePainter extends CustomPainter {
@@ -27,10 +30,20 @@ class _NaturePainter extends CustomPainter {
   static const Color _moonlight = Color(0xFFECE8FA);
 
   static const List<(double, double, double)> _stars = [
-    (48, 90, 1.6), (132, 58, 1.2), (196, 120, 1.4), (88, 190, 1.0), (362, 250, 1.3), (228, 40, 1.1),
+    (48, 90, 1.6),
+    (132, 58, 1.2),
+    (196, 120, 1.4),
+    (88, 190, 1.0),
+    (362, 250, 1.3),
+    (228, 40, 1.1),
   ];
   static const List<(double, double, double)> _lakeLines = [
-    (40, 520, 90), (210, 540, 120), (80, 600, 70), (240, 642, 100), (30, 700, 120), (200, 760, 90),
+    (40, 520, 90),
+    (210, 540, 120),
+    (80, 600, 70),
+    (240, 642, 100),
+    (30, 700, 120),
+    (200, 760, 90),
   ];
 
   static final Path _hill1 = Path()
@@ -82,17 +95,27 @@ class _NaturePainter extends CustomPainter {
       glowCentre,
       180,
       Paint()
-        ..shader = RadialGradient(colors: [t.glow.withValues(alpha: 0.85), t.glow.withValues(alpha: 0)])
-            .createShader(Rect.fromCircle(center: glowCentre, radius: 180)),
+        ..shader = RadialGradient(
+          colors: [t.glow.withValues(alpha: 0.85), t.glow.withValues(alpha: 0)],
+        ).createShader(Rect.fromCircle(center: glowCentre, radius: 180)),
     );
 
     final day = 1 - t.nightness;
     if (day > 0.01) {
-      canvas.drawCircle(glowCentre, 40, Paint()..color = t.gold2.withValues(alpha: 0.6 * day));
+      canvas.drawCircle(
+        glowCentre,
+        40,
+        Paint()..color = t.gold2.withValues(alpha: 0.6 * day),
+      );
     }
     if (t.nightness > 0.01) {
-      canvas.drawCircle(const Offset(296, 140), 30, Paint()..color = _moonlight.withValues(alpha: 0.95 * t.nightness));
-      final star = Paint()..color = _moonlight.withValues(alpha: 0.75 * t.nightness);
+      canvas.drawCircle(
+        const Offset(296, 140),
+        30,
+        Paint()..color = _moonlight.withValues(alpha: 0.95 * t.nightness),
+      );
+      final star = Paint()
+        ..color = _moonlight.withValues(alpha: 0.75 * t.nightness);
       for (final (x, y, r) in _stars) {
         canvas.drawCircle(Offset(x, y), r, star);
       }

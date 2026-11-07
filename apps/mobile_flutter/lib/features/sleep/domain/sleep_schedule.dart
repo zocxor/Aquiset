@@ -14,13 +14,15 @@ class SleepSchedule {
   });
 
   factory SleepSchedule.fromJson(Map<String, dynamic> json) => SleepSchedule(
-        bedtime: MinuteOfDay.wrap((json['bedtime'] as num).toInt()),
-        wake: MinuteOfDay.wrap((json['wake'] as num).toInt()),
-        windDown: Duration(minutes: (json['wind_down_min'] as num?)?.toInt() ?? 30),
-        alarmWeekdays: ((json['alarm_weekdays'] as List<dynamic>?) ?? const <dynamic>[1, 2, 3, 4, 5])
+    bedtime: MinuteOfDay.wrap((json['bedtime'] as num).toInt()),
+    wake: MinuteOfDay.wrap((json['wake'] as num).toInt()),
+    windDown: Duration(minutes: (json['wind_down_min'] as num?)?.toInt() ?? 30),
+    alarmWeekdays:
+        ((json['alarm_weekdays'] as List<dynamic>?) ??
+                const <dynamic>[1, 2, 3, 4, 5])
             .map((e) => (e as num).toInt())
             .toSet(),
-      );
+  );
 
   static const Duration minRest = Duration(hours: 4);
   static const Duration maxRest = Duration(hours: 12);
@@ -44,26 +46,34 @@ class SleepSchedule {
     return (rest < minRest || rest > maxRest) ? this : next;
   }
 
-  SleepSchedule copyWith({MinuteOfDay? bedtime, MinuteOfDay? wake, Duration? windDown, Set<int>? alarmWeekdays}) =>
-      SleepSchedule(
-        bedtime: bedtime ?? this.bedtime,
-        wake: wake ?? this.wake,
-        windDown: windDown ?? this.windDown,
-        alarmWeekdays: alarmWeekdays ?? this.alarmWeekdays,
-      );
+  SleepSchedule copyWith({
+    MinuteOfDay? bedtime,
+    MinuteOfDay? wake,
+    Duration? windDown,
+    Set<int>? alarmWeekdays,
+  }) => SleepSchedule(
+    bedtime: bedtime ?? this.bedtime,
+    wake: wake ?? this.wake,
+    windDown: windDown ?? this.windDown,
+    alarmWeekdays: alarmWeekdays ?? this.alarmWeekdays,
+  );
 
   Map<String, dynamic> toJson() => <String, dynamic>{
-        'bedtime': bedtime.value,
-        'wake': wake.value,
-        'wind_down_min': windDown.inMinutes,
-        'alarm_weekdays': alarmWeekdays.toList()..sort(),
-      };
+    'bedtime': bedtime.value,
+    'wake': wake.value,
+    'wind_down_min': windDown.inMinutes,
+    'alarm_weekdays': alarmWeekdays.toList()..sort(),
+  };
 }
 
 /// One night the person logged. [restfulness] is their own 1–5 rating.
 @immutable
 class SleepLog {
-  const SleepLog({required this.bedtime, required this.wokeAt, this.restfulness});
+  const SleepLog({
+    required this.bedtime,
+    required this.wokeAt,
+    this.restfulness,
+  });
 
   final DateTime bedtime;
   final DateTime wokeAt;
@@ -74,14 +84,18 @@ class SleepLog {
 
 @immutable
 class ConsistencyReport {
-  const ConsistencyReport({required this.offsets, required this.toleranceMinutes});
+  const ConsistencyReport({
+    required this.offsets,
+    required this.toleranceMinutes,
+  });
 
   /// Signed minutes from the planned bedtime, one per logged night.
   final List<int> offsets;
   final int toleranceMinutes;
 
   int get nights => offsets.length;
-  int get withinTolerance => offsets.where((o) => o.abs() <= toleranceMinutes).length;
+  int get withinTolerance =>
+      offsets.where((o) => o.abs() <= toleranceMinutes).length;
 }
 
 /// How many logged bedtimes fell within ±[toleranceMinutes] of the plan.
@@ -90,8 +104,9 @@ ConsistencyReport bedtimeConsistency(
   Iterable<SleepLog> logs,
   MinuteOfDay plannedBedtime, {
   int toleranceMinutes = 30,
-}) =>
-    ConsistencyReport(
-      offsets: logs.map((l) => plannedBedtime.signedOffsetTo(MinuteOfDay.of(l.bedtime))).toList(),
-      toleranceMinutes: toleranceMinutes,
-    );
+}) => ConsistencyReport(
+  offsets: logs
+      .map((l) => plannedBedtime.signedOffsetTo(MinuteOfDay.of(l.bedtime)))
+      .toList(),
+  toleranceMinutes: toleranceMinutes,
+);

@@ -24,7 +24,12 @@ class SleepDashboard extends StatelessWidget {
       builder: (context, _) {
         final c = s.sleep;
         return ListView(
-          padding: EdgeInsets.fromLTRB(16, 4, 16, 150 + MediaQuery.paddingOf(context).bottom),
+          padding: EdgeInsets.fromLTRB(
+            16,
+            4,
+            16,
+            150 + MediaQuery.paddingOf(context).bottom,
+          ),
           children: [
             RiseIn(child: _DialCard(c: c)),
             const SizedBox(height: 14),
@@ -42,12 +47,14 @@ class SleepDashboard extends StatelessWidget {
   }
 }
 
-String _restLabel(Duration d) => '${d.inHours}h ${(d.inMinutes % 60).toString().padLeft(2, '0')}m';
+String _restLabel(Duration d) =>
+    '${d.inHours}h ${(d.inMinutes % 60).toString().padLeft(2, '0')}m';
 
 String weekdaysLabel(Set<int> days) {
   const names = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
   if (days.length == 7) return 'Every day';
-  if (days.length == 5 && days.containsAll(const {1, 2, 3, 4, 5})) return 'Weekdays';
+  if (days.length == 5 && days.containsAll(const {1, 2, 3, 4, 5}))
+    return 'Weekdays';
   if (days.length == 2 && days.containsAll(const {6, 7})) return 'Weekends';
   if (days.isEmpty) return 'Once';
   return (days.toList()..sort()).map((d) => names[d - 1]).join(', ');
@@ -69,7 +76,10 @@ class _DialCard extends StatelessWidget {
         weight: GlassWeight.strong,
         shareBackdrop: false,
         borderRadius: BorderRadius.circular(17),
-        child: SizedBox.square(dimension: 34, child: Icon(icon, size: 16, color: color)),
+        child: SizedBox.square(
+          dimension: 34,
+          child: Icon(icon, size: 16, color: color),
+        ),
       ),
     );
   }
@@ -87,12 +97,16 @@ class _DialCard extends StatelessWidget {
           Row(
             children: [
               Expanded(child: Text('PLANNED REST', style: AqType.eyebrow(t))),
-              Text('Wind-down from ${sch.windDownStart.format12()}', style: AqType.caption(t)),
+              Text(
+                'Wind-down from ${sch.windDownStart.format12()}',
+                style: AqType.caption(t),
+              ),
             ],
           ),
           const SizedBox(height: 8),
           Semantics(
-            label: 'Bedtime ${sch.bedtime.format12()}, wake ${sch.wake.format12()}, '
+            label:
+                'Bedtime ${sch.bedtime.format12()}, wake ${sch.wake.format12()}, '
                 '${rest.inHours} hours ${rest.inMinutes % 60} minutes planned',
             excludeSemantics: true,
             child: SizedBox.square(
@@ -101,13 +115,21 @@ class _DialCard extends StatelessWidget {
                 children: [
                   CustomPaint(
                     size: const Size.square(_size),
-                    painter: _DialPainter(tokens: t, bed: sch.bedtime, wake: sch.wake, radius: _radius),
+                    painter: _DialPainter(
+                      tokens: t,
+                      bed: sch.bedtime,
+                      wake: sch.wake,
+                      radius: _radius,
+                    ),
                   ),
                   Center(
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Text(_restLabel(rest), style: AqType.display(t, size: 36)),
+                        Text(
+                          _restLabel(rest),
+                          style: AqType.display(t, size: 36),
+                        ),
                         const SizedBox(height: 4),
                         Text('planned rest', style: AqType.caption(t)),
                       ],
@@ -148,7 +170,12 @@ class _DialCard extends StatelessWidget {
 }
 
 class _DialPainter extends CustomPainter {
-  _DialPainter({required this.tokens, required this.bed, required this.wake, required this.radius});
+  _DialPainter({
+    required this.tokens,
+    required this.bed,
+    required this.wake,
+    required this.radius,
+  });
 
   final AqTokens tokens;
   final MinuteOfDay bed;
@@ -202,9 +229,21 @@ class _DialPainter extends CustomPainter {
         ).createShader(ring),
     );
 
-    for (final (minute, text) in const [(0.0, '12 am'), (360.0, '6 am'), (720.0, '12 pm'), (1080.0, '6 pm')]) {
+    for (final (minute, text) in const [
+      (0.0, '12 am'),
+      (360.0, '6 am'),
+      (720.0, '12 pm'),
+      (1080.0, '6 pm'),
+    ]) {
       final p = TextPainter(
-        text: TextSpan(text: text, style: TextStyle(fontSize: 10, fontWeight: FontWeight.w700, color: t.ink3)),
+        text: TextSpan(
+          text: text,
+          style: TextStyle(
+            fontSize: 10,
+            fontWeight: FontWeight.w700,
+            color: t.ink3,
+          ),
+        ),
         textDirection: TextDirection.ltr,
       )..layout();
       final at = _point(c, minute, 54);
@@ -214,12 +253,20 @@ class _DialPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(_DialPainter oldDelegate) =>
-      oldDelegate.bed != bed || oldDelegate.wake != wake || oldDelegate.tokens != tokens;
+      oldDelegate.bed != bed ||
+      oldDelegate.wake != wake ||
+      oldDelegate.tokens != tokens;
 }
 
 /// − time + stepper on thin glass. Each button is a 44×44 target.
 class TimeStepper extends StatelessWidget {
-  const TimeStepper({super.key, required this.label, required this.value, required this.onMinus, required this.onPlus});
+  const TimeStepper({
+    super.key,
+    required this.label,
+    required this.value,
+    required this.onMinus,
+    required this.onPlus,
+  });
 
   final String label;
   final String value;
@@ -229,14 +276,18 @@ class TimeStepper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final t = AqTokens.of(context);
-    Widget button(IconData icon, String semantic, VoidCallback onTap) => Semantics(
+    Widget button(IconData icon, String semantic, VoidCallback onTap) =>
+        Semantics(
           button: true,
           label: semantic,
           excludeSemantics: true,
           child: InkResponse(
             onTap: onTap,
             radius: 24,
-            child: SizedBox.square(dimension: 44, child: Icon(icon, size: 18, color: t.ink)),
+            child: SizedBox.square(
+              dimension: 44,
+              child: Icon(icon, size: 18, color: t.ink),
+            ),
           ),
         );
     return GlassSurface(
@@ -256,7 +307,10 @@ class TimeStepper extends StatelessWidget {
                 children: [
                   Text(label.toUpperCase(), style: AqType.eyebrow(t, size: 10)),
                   const SizedBox(height: 2),
-                  FittedBox(fit: BoxFit.scaleDown, child: Text(value, style: AqType.stat(t, size: 15))),
+                  FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text(value, style: AqType.stat(t, size: 15)),
+                  ),
                 ],
               ),
             ),
@@ -282,20 +336,36 @@ class _WindDownCard extends StatelessWidget {
           Row(
             children: [
               Expanded(child: Text('Wind-down', style: AqType.title(t))),
-              Text('${c.stepsDone} of ${c.steps.length} done', style: AqType.caption(t)),
+              Text(
+                '${c.stepsDone} of ${c.steps.length} done',
+                style: AqType.caption(t),
+              ),
             ],
           ),
           const SizedBox(height: 6),
           for (final step in c.steps)
-            _CheckRow(label: step.label, meta: step.meta, done: c.isDone(step.id), onTap: () => c.toggleStep(step.id)),
+            _CheckRow(
+              label: step.label,
+              meta: step.meta,
+              done: c.isDone(step.id),
+              onTap: () => c.toggleStep(step.id),
+            ),
           if (c.windDownLive) ...[
             const SizedBox(height: 6),
             Row(
               children: [
                 Icon(Icons.phone_iphone_rounded, size: 18, color: t.lav),
                 const SizedBox(width: 8),
-                Expanded(child: Text('Counting down on your Lock Screen', style: AqType.caption(t))),
-                TextButton(onPressed: c.endWindDown, child: Text('Stop', style: AqType.label(t, color: t.lav))),
+                Expanded(
+                  child: Text(
+                    'Counting down on your Lock Screen',
+                    style: AqType.caption(t),
+                  ),
+                ),
+                TextButton(
+                  onPressed: c.endWindDown,
+                  child: Text('Stop', style: AqType.label(t, color: t.lav)),
+                ),
               ],
             ),
           ],
@@ -306,7 +376,12 @@ class _WindDownCard extends StatelessWidget {
 }
 
 class _CheckRow extends StatelessWidget {
-  const _CheckRow({required this.label, required this.meta, required this.done, required this.onTap});
+  const _CheckRow({
+    required this.label,
+    required this.meta,
+    required this.done,
+    required this.onTap,
+  });
 
   final String label;
   final String meta;
@@ -338,7 +413,9 @@ class _CheckRow extends StatelessWidget {
                     shape: BoxShape.circle,
                     border: done ? null : Border.all(color: t.ink3, width: 1.5),
                   ),
-                  child: done ? Icon(Icons.check_rounded, size: 16, color: t.onAccent) : null,
+                  child: done
+                      ? Icon(Icons.check_rounded, size: 16, color: t.onAccent)
+                      : null,
                 ),
                 const SizedBox(width: 12),
                 Expanded(child: Text(label, style: AqType.label(t, size: 14))),
@@ -380,36 +457,58 @@ class _AlarmCard extends StatelessWidget {
                       children: [
                         Text(parts.first, style: AqType.display(t, size: 48)),
                         const SizedBox(width: 6),
-                        Text(parts.last, style: AqType.label(t, size: 15, color: t.ink2)),
+                        Text(
+                          parts.last,
+                          style: AqType.label(t, size: 15, color: t.ink2),
+                        ),
                       ],
                     ),
                     const SizedBox(height: 6),
                     Text(
                       '${weekdaysLabel(c.schedule.alarmWeekdays)} · Gentle wake · Snooze 9 min',
-                      style: AqType.caption(t).copyWith(color: t.ink2, fontSize: 12.5),
+                      style: AqType.caption(t)
+                          .copyWith(color: t.ink2, fontSize: 12.5),
                     ),
                   ],
                 ),
               ),
-              GlassSwitch(value: c.alarmOn, onChanged: c.setAlarmOn, semanticLabel: 'Wake-up alarm'),
+              GlassSwitch(
+                value: c.alarmOn,
+                onChanged: c.setAlarmOn,
+                semanticLabel: 'Wake-up alarm',
+              ),
             ],
           ),
-          Padding(padding: const EdgeInsets.symmetric(vertical: 12), child: Divider(height: 1, color: t.track)),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 12),
+            child: Divider(height: 1, color: t.track),
+          ),
           Row(
             children: [
-              Icon(cap.ready ? Icons.verified_user_outlined : Icons.info_outline_rounded, size: 20, color: cap.ready ? t.leaf : t.gold),
+              Icon(
+                cap.ready
+                    ? Icons.verified_user_outlined
+                    : Icons.info_outline_rounded,
+                size: 20,
+                color: cap.ready ? t.leaf : t.gold,
+              ),
               const SizedBox(width: 10),
               Expanded(
                 child: Text(
                   c.alarmOn ? cap.statusText : 'Alarm off · nothing scheduled',
-                  style: AqType.caption(t).copyWith(color: t.ink2, fontSize: 12.5),
+                  style: AqType.caption(t)
+                      .copyWith(color: t.ink2, fontSize: 12.5),
                 ),
               ),
               GlassButton(
                 label: 'Test alarm',
                 onPressed: () async {
                   final ok = await c.testAlarm();
-                  s.showToast(ok ? 'Test alarm rings in 10 seconds' : 'Couldn\'t schedule a test alarm');
+                  s.showToast(
+                    ok
+                        ? 'Test alarm rings in 10 seconds'
+                        : 'Couldn\'t schedule a test alarm',
+                  );
                 },
               ),
             ],
@@ -419,7 +518,10 @@ class _AlarmCard extends StatelessWidget {
               alignment: Alignment.centerLeft,
               child: TextButton(
                 onPressed: s.platform.openAlarmSettings,
-                child: Text('Open alarm settings', style: AqType.label(t, color: t.aqua)),
+                child: Text(
+                  'Open alarm settings',
+                  style: AqType.label(t, color: t.aqua),
+                ),
               ),
             ),
         ],
@@ -445,18 +547,34 @@ class _LastNightCard extends StatelessWidget {
               Expanded(child: Text('Last night', style: AqType.title(t))),
               TextButton(
                 onPressed: () => showLogNightSheet(context, c),
-                child: Text(night == null ? 'Log it' : 'Log a night', style: AqType.label(t, color: t.aqua)),
+                child: Text(
+                  night == null ? 'Log it' : 'Log a night',
+                  style: AqType.label(t, color: t.aqua),
+                ),
               ),
             ],
           ),
           if (night == null)
-            Text('Log when you went to bed and woke up to see your rhythm here.', style: AqType.body(t))
+            Text(
+              'Log when you went to bed and woke up to see your rhythm here.',
+              style: AqType.body(t),
+            )
           else ...[
             const SizedBox(height: 4),
             Row(
               children: [
-                Expanded(child: _Stat(label: 'Bed', value: MinuteOfDay.of(night.bedtime).format12())),
-                Expanded(child: _Stat(label: 'Up', value: MinuteOfDay.of(night.wokeAt).format12())),
+                Expanded(
+                  child: _Stat(
+                    label: 'Bed',
+                    value: MinuteOfDay.of(night.bedtime).format12(),
+                  ),
+                ),
+                Expanded(
+                  child: _Stat(
+                    label: 'Up',
+                    value: MinuteOfDay.of(night.wokeAt).format12(),
+                  ),
+                ),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -470,7 +588,10 @@ class _LastNightCard extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 12),
-            Text('Your own rating, not a medical score.', style: AqType.caption(t)),
+            Text(
+              'Your own rating, not a medical score.',
+              style: AqType.caption(t),
+            ),
           ],
         ],
       ),
@@ -517,7 +638,9 @@ class _Dots extends StatelessWidget {
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color: i <= value ? t.lav : Colors.transparent,
-                border: i <= value ? null : Border.all(color: t.lav, width: 1.5),
+                border: i <= value
+                    ? null
+                    : Border.all(color: t.lav, width: 1.5),
               ),
             ),
         ],
@@ -537,7 +660,12 @@ Future<void> showLogNightSheet(BuildContext context, SleepController c) {
       builder: (context, setState) {
         final t = AqTokens.of(context);
         return Padding(
-          padding: EdgeInsets.fromLTRB(12, 0, 12, 12 + MediaQuery.paddingOf(context).bottom),
+          padding: EdgeInsets.fromLTRB(
+            12,
+            0,
+            12,
+            12 + MediaQuery.paddingOf(context).bottom,
+          ),
           child: GlassSurface(
             weight: GlassWeight.strong,
             borderRadius: BorderRadius.circular(32),
@@ -592,9 +720,17 @@ Future<void> showLogNightSheet(BuildContext context, SleepController c) {
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
                                 color: rest == i ? t.lav : t.glassThin,
-                                border: Border.all(color: rest == i ? t.lav : t.edge),
+                                border: Border.all(
+                                  color: rest == i ? t.lav : t.edge,
+                                ),
                               ),
-                              child: Text('$i', style: AqType.label(t, color: rest == i ? t.onAccent : t.ink)),
+                              child: Text(
+                                '$i',
+                                style: AqType.label(
+                                  t,
+                                  color: rest == i ? t.onAccent : t.ink,
+                                ),
+                              ),
                             ),
                           ),
                         ),
@@ -610,11 +746,15 @@ Future<void> showLogNightSheet(BuildContext context, SleepController c) {
                   onPressed: () {
                     final now = DateTime.now();
                     final wokeAt = wake.onDate(now);
-                    c.logNight(SleepLog(
-                      bedtime: wokeAt.subtract(Duration(minutes: bed.minutesUntil(wake))),
-                      wokeAt: wokeAt,
-                      restfulness: rest,
-                    ));
+                    c.logNight(
+                      SleepLog(
+                        bedtime: wokeAt.subtract(
+                          Duration(minutes: bed.minutesUntil(wake)),
+                        ),
+                        wokeAt: wokeAt,
+                        restfulness: rest,
+                      ),
+                    );
                     Navigator.of(sheetContext).pop();
                   },
                 ),
@@ -659,7 +799,10 @@ class _ConsistencyCard extends StatelessWidget {
                     top: 22,
                     height: 28,
                     child: DecoratedBox(
-                      decoration: BoxDecoration(color: t.lavSoft, borderRadius: BorderRadius.circular(10)),
+                      decoration: BoxDecoration(
+                        color: t.lavSoft,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
                     ),
                   ),
                   Row(
@@ -673,14 +816,21 @@ class _ConsistencyCard extends StatelessWidget {
                             children: [
                               Positioned(
                                 left: 6,
-                                top: (30 + offset.clamp(-80, 80) * 0.45).toDouble(),
+                                top: (30 + offset.clamp(-80, 80) * 0.45)
+                                    .toDouble(),
                                 child: Container(
                                   width: 12,
                                   height: 12,
                                   decoration: BoxDecoration(
                                     shape: BoxShape.circle,
-                                    color: offset.abs() <= report.toleranceMinutes ? t.lav : Colors.transparent,
-                                    border: offset.abs() <= report.toleranceMinutes ? null : Border.all(color: t.lav, width: 2),
+                                    color:
+                                        offset.abs() <= report.toleranceMinutes
+                                        ? t.lav
+                                        : Colors.transparent,
+                                    border:
+                                        offset.abs() <= report.toleranceMinutes
+                                        ? null
+                                        : Border.all(color: t.lav, width: 2),
                                   ),
                                 ),
                               ),
@@ -693,7 +843,10 @@ class _ConsistencyCard extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 8),
-            Text('Filled dots are inside the band. Measures only the times you logged.', style: AqType.caption(t)),
+            Text(
+              'Filled dots are inside the band. Measures only the times you logged.',
+              style: AqType.caption(t),
+            ),
           ],
         ],
       ),
