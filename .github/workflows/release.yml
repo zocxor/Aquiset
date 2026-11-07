@@ -1,0 +1,103 @@
+name: release
+
+# Upload this repo to GitHub, add the 4 Secrets below, push a tag v0.1.0 —
+# GitHub builds the SIGNED AAB + APK. No Windows build needed.
+# No keystore, password, or .env is ever committed.
+#
+# Required Secrets (Repo > Settings > Secrets and variables > Actions):
+#   KEYSTORE_BASE64    — base64 of upload-keystore.jks (see docs/RELEASE_SIGNING.md §2)
+#   KEYSTORE_PASSWORD, KEY_ALIAS, KEY_PASSWORD
+# If a Secret is missing the job stops with a clear error before building.
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  build-release:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/mobile_flutter
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      # v5 ships lib/ + partial native src only — generate the Android
+      # shell here. flutter create keeps our lib/ and AndroidManifest.xml.
+      - name: Generate Android shell
+        run: |
+          flutter create --platforms=android --org com.aquiset .
+          rm -rf android/app/src/main/kotlin/com/aquiset/aquiset
+          ls android/app/src/main/kotlin/com/aquiset/app/MainActivity.kt
+          ls android/app/src/main/AndroidManifest.xml
+
+      - name: Check signing secrets are set
+        run: |
+          test -n "$KEYSTORE_BASE64" || { echo "MISSING SECRET: KEYSTORE_BASE64"; exit 1; }
+          test -n "$KEYSTORE_PASSWORD" || { echo "MISSING SECRET: KEYSTORE_PASSWORD"; exit 1; }
+          test -n "$KEY_ALIAS" || { echo "MISSING SECRET: KEY_ALIAS"; exit 1; }
+          test -n "$KEY_PASSWORD" || { echo "MISSING SECRET: KEY_PASSWORD"; exit 1; }
+          echo "All 4 signing secrets are set."
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+
+      - name: Restore keystore + key.properties
+        run: |
+          echo "$KEYSTORE_BASE64" | base64 --decode > android/app/upload-keystore.jks
+          cat > android/key.properties <<EOF
+          storePassword=$KEYSTORE_PASSWORD
+          keyPassword=$KEY_PASSWORD
+          keyAlias=$KEY_ALIAS
+          storeFile=upload-keystore.jks
+          EOF
+          ls -l android/app/upload-keystore.jks android/key.properties
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+
+      - name: Patch Android signing + Glance deps
+        run: python3 ../../tools/patch_android.py android/app/build.gradle.kts
+
+      - run: flutter pub get
+      - run: flutter analyze
+      - run: flutter test
+      - run: flutter build appbundle --release
+      - run: flutter build apk --release
+
+      - name: Verify outputs + signature
+        run: |
+          ls -lh build/app/outputs/bundle/release/app-release.aab build/app/outputs/flutter-apk/app-release.apk
+          jarsigner -verify build/app/outputs/flutter-apk/app-release.apk | head -n 20
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: aquiset-release-${{ github.ref_name }}
+          path: |
+            apps/mobile_flutter/build/app/outputs/bundle/release/app-release.aab
+            apps/mobile_flutter/build/app/outputs/flutter-apk/app-release.apk
+
+      - name: Attach AAB + APK to the GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            apps/mobile_flutter/build/app/outputs/bundle/release/app-release.aab
+            apps/mobile_flutter/build/app/outputs/flutter-apk/app-release.apk

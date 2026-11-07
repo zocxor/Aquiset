@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Monochrome water drop for the status bar, Live Update chip and shortcuts. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M12,3.5C15.2,7.4 18,10.9 18,14.1A6,6 0 0,1 6,14.1C6,10.9 8.8,7.4 12,3.5Z" />
+</vector>

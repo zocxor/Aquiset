@@ -1,0 +1,43 @@
+# AQUISET — never commit secrets, keys, or local env
+.env
+.env.local
+*.env
+!.env.example
+
+# Release signing — NEVER commit these. Back up offline.
+*.jks
+*.keystore
+**/key.properties
+**/upload-keystore.jks
+apps/mobile_flutter/android/key.properties
+apps/mobile_flutter/android/app/upload-keystore.jks
+
+# Flutter / Dart build outputs
+**/build/
+**/.dart_tool/
+**/.flutter-plugins
+**/.flutter-plugins-dependencies
+**/pubspec.lock
+**/.packages
+
+# Android local
+**/local.properties
+**/*.iml
+**/.gradle/
+**/gradle-wrapper.jar
+
+# iOS local
+**/Pods/
+**/Podfile.lock
+**/DerivedData/
+**/*.xcworkspace/xcuserdata/
+**/*.xcodeproj/xcuserdata/
+**/Runner/GeneratedPluginRegistrant.*
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json

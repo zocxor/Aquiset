@@ -1,0 +1,28 @@
+name: aquiset
+description: AQUISET — a calm daily-rhythm companion for hydration, sleep and waking.
+publish_to: none
+version: 0.1.0+1
+
+environment:
+  # BackdropFilter.grouped / BackdropGroup need Flutter 3.29 or newer.
+  sdk: ">=3.7.0 <4.0.0"
+  flutter: ">=3.29.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  google_fonts: ^6.2.1
+  shared_preferences: ^2.3.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+flutter:
+  uses-material-design: true
+  # To ship fonts offline, download Instrument Serif and Manrope (OFL) into
+  # assets/google_fonts/ and uncomment below. google_fonts then uses the bundled
+  # files and never fetches at runtime.
+  # assets:
+  #   - assets/google_fonts/

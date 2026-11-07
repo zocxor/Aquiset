@@ -1,0 +1,35 @@
+name: ci
+
+# Same as release, but unsigned: generates the Android shell in CI,
+# then analyze + test. Runs on every push to main / PR.
+# iOS is not built here (needs Mac + Xcode).
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  flutter:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/mobile_flutter
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - name: Generate Android shell
+        run: |
+          flutter create --platforms=android --org com.aquiset .
+          rm -rf android/app/src/main/kotlin/com/aquiset/aquiset
+      - run: flutter pub get
+      - run: dart format --output=none --set-exit-if-changed lib test
+      - run: flutter analyze
+      - run: flutter test --coverage

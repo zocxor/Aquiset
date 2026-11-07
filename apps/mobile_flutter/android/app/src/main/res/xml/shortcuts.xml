@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcut
+        android:shortcutId="log_glass"
+        android:enabled="true"
+        android:icon="@drawable/ic_stat_aquiset"
+        android:shortcutShortLabel="@string/shortcut_log_short"
+        android:shortcutLongLabel="@string/shortcut_log_long">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="com.aquiset.app"
+            android:targetClass="com.aquiset.app.MainActivity">
+            <extra android:name="aquiset_action" android:value="logDrink" />
+            <extra android:name="aquiset_ml" android:value="250" />
+        </intent>
+    </shortcut>
+    <shortcut
+        android:shortcutId="wind_down"
+        android:enabled="true"
+        android:icon="@drawable/ic_stat_aquiset"
+        android:shortcutShortLabel="@string/shortcut_wind_short"
+        android:shortcutLongLabel="@string/shortcut_wind_long">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="com.aquiset.app"
+            android:targetClass="com.aquiset.app.MainActivity">
+            <extra android:name="aquiset_action" android:value="startWindDown" />
+        </intent>
+    </shortcut>
+</shortcuts>

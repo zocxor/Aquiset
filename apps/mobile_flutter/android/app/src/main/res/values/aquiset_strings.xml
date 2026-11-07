@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="widget_today_label">AQUISET · Today</string>
+    <string name="widget_today_description">Water so far, bedtime and alarm, with one-tap logging.</string>
+    <string name="shortcut_log_short">Log a glass</string>
+    <string name="shortcut_log_long">Log a glass of water</string>
+    <string name="shortcut_wind_short">Wind down</string>
+    <string name="shortcut_wind_long">Start wind-down</string>
+</resources>

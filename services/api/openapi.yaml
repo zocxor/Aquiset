@@ -1,0 +1,291 @@
+openapi: 3.1.0
+info:
+  title: AQUISET API
+  version: 0.1.0
+  description: |
+    Sync and account API (blueprint section 11). Alarm scheduling is local and
+    native: these endpoints sync preferences and history and are never
+    required for an alarm to fire. Timestamps are UTC; schedules keep the
+    person's IANA timezone.
+servers:
+  - url: https://api.example.com/v1
+security:
+  - bearer: []
+
+paths:
+  /profile:
+    post:
+      summary: Create or update profile settings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/Profile' }
+      responses:
+        '200': { description: Saved, content: { application/json: { schema: { $ref: '#/components/schemas/Profile' } } } }
+        default: { $ref: '#/components/responses/Error' }
+
+  /dashboard:
+    get:
+      summary: Dashboard summary and next actions
+      parameters:
+        - { name: date, in: query, schema: { type: string, format: date } }
+      responses:
+        '200': { description: OK, content: { application/json: { schema: { $ref: '#/components/schemas/Dashboard' } } } }
+        default: { $ref: '#/components/responses/Error' }
+
+  /hydration/summary:
+    get:
+      summary: Day or week intake summary
+      parameters:
+        - { name: range, in: query, schema: { type: string, enum: [day, week], default: day } }
+        - { name: date, in: query, schema: { type: string, format: date } }
+      responses:
+        '200': { description: OK, content: { application/json: { schema: { $ref: '#/components/schemas/HydrationSummary' } } } }
+        default: { $ref: '#/components/responses/Error' }
+
+  /hydration/logs:
+    post:
+      summary: Create drink log (idempotent)
+      description: Retries with the same Idempotency-Key (the device's client_id) return the original log.
+      parameters:
+        - { name: Idempotency-Key, in: header, required: true, schema: { type: string, maxLength: 64 } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/DrinkLogInput' }
+      responses:
+        '201': { description: Created, content: { application/json: { schema: { $ref: '#/components/schemas/DrinkLog' } } } }
+        '200': { description: Already created (idempotent replay), content: { application/json: { schema: { $ref: '#/components/schemas/DrinkLog' } } } }
+        default: { $ref: '#/components/responses/Error' }
+
+  /hydration/logs/{id}:
+    parameters:
+      - { name: id, in: path, required: true, schema: { type: string, format: uuid } }
+    patch:
+      summary: Edit drink log
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                amount_ml: { type: integer, minimum: 1, maximum: 3000 }
+                logged_at: { type: string, format: date-time }
+      responses:
+        '200': { description: OK, content: { application/json: { schema: { $ref: '#/components/schemas/DrinkLog' } } } }
+        default: { $ref: '#/components/responses/Error' }
+    delete:
+      summary: Delete drink log
+      responses:
+        '204': { description: Deleted }
+        default: { $ref: '#/components/responses/Error' }
+
+  /hydration/reminders:
+    get:
+      summary: Read reminder settings
+      responses:
+        '200': { description: OK, content: { application/json: { schema: { $ref: '#/components/schemas/ReminderSettings' } } } }
+    put:
+      summary: Update reminder settings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/ReminderSettings' }
+      responses:
+        '200': { description: Saved, content: { application/json: { schema: { $ref: '#/components/schemas/ReminderSettings' } } } }
+        default: { $ref: '#/components/responses/Error' }
+
+  /sleep/summary:
+    get:
+      summary: Sleep schedule, recent logs and bedtime consistency
+      responses:
+        '200': { description: OK, content: { application/json: { schema: { $ref: '#/components/schemas/SleepSummary' } } } }
+
+  /sleep/schedule:
+    put:
+      summary: Update sleep schedule
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/SleepSchedule' }
+      responses:
+        '200': { description: Saved, content: { application/json: { schema: { $ref: '#/components/schemas/SleepSchedule' } } } }
+        default: { $ref: '#/components/responses/Error' }
+
+  /sleep/logs:
+    post:
+      summary: Create sleep log (idempotent)
+      parameters:
+        - { name: Idempotency-Key, in: header, required: true, schema: { type: string, maxLength: 64 } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/SleepLogInput' }
+      responses:
+        '201': { description: Created }
+        default: { $ref: '#/components/responses/Error' }
+
+  /challenges:
+    get:
+      summary: List optional challenges
+      responses:
+        '200': { description: OK, content: { application/json: { schema: { type: array, items: { $ref: '#/components/schemas/Challenge' } } } } }
+
+  /challenges/{id}/join:
+    post:
+      summary: Join an optional challenge
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string } }
+      responses:
+        '200': { description: Joined }
+        default: { $ref: '#/components/responses/Error' }
+
+  /feedback:
+    post:
+      summary: Submit feedback
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [message]
+              properties:
+                message: { type: string, maxLength: 4000 }
+                app_version: { type: string }
+      responses:
+        '202': { description: Accepted }
+
+  /account:
+    delete:
+      summary: Delete the account and all associated data
+      responses:
+        '202': { description: Deletion scheduled; completes within the published retention window }
+
+  /account/export:
+    get:
+      summary: Export all of the person's data as JSON
+      responses:
+        '200': { description: Export, content: { application/json: { schema: { type: object } } } }
+
+components:
+  securitySchemes:
+    bearer: { type: http, scheme: bearer, bearerFormat: JWT }
+
+  responses:
+    Error:
+      description: Error
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+
+  schemas:
+    Error:
+      type: object
+      required: [code, message, request_id]
+      properties:
+        code: { type: string, examples: [validation_failed] }
+        message: { type: string }
+        request_id: { type: string }
+
+    Profile:
+      type: object
+      properties:
+        locale: { type: string, examples: [en-PK] }
+        timezone: { type: string, examples: [Asia/Karachi] }
+        theme_mode: { type: string, enum: [system, day, night] }
+        units: { type: string, enum: [ml, floz] }
+
+    DrinkLogInput:
+      type: object
+      required: [amount_ml, logged_at]
+      properties:
+        amount_ml: { type: integer, minimum: 1, maximum: 3000 }
+        kind: { type: string, enum: [sip, cup, glass, bottle, custom] }
+        beverage_type: { type: string, default: water }
+        source: { type: string, enum: [app, widget, control, siri, watch, shortcut] }
+        logged_at: { type: string, format: date-time }
+
+    DrinkLog:
+      allOf:
+        - $ref: '#/components/schemas/DrinkLogInput'
+        - type: object
+          properties:
+            id: { type: string, format: uuid }
+            client_id: { type: string }
+
+    HydrationSummary:
+      type: object
+      properties:
+        total_ml: { type: integer }
+        goal_ml: { type: [integer, 'null'], description: Set by the person; null if none }
+        days:
+          type: array
+          items:
+            type: object
+            properties:
+              date: { type: string, format: date }
+              total_ml: { type: integer }
+              logs: { type: integer }
+
+    ReminderSettings:
+      type: object
+      properties:
+        enabled: { type: boolean }
+        quiet_start_min: { type: integer, minimum: 0, maximum: 1439 }
+        quiet_end_min: { type: integer, minimum: 0, maximum: 1439 }
+        interval_min: { type: integer, minimum: 30, maximum: 480 }
+        cooldown_min: { type: integer, minimum: 0, maximum: 240 }
+        daily_cap: { type: integer, minimum: 0, maximum: 12 }
+        clinician_fluid_plan: { type: boolean }
+
+    SleepSchedule:
+      type: object
+      required: [bedtime_min, wake_min]
+      properties:
+        bedtime_min: { type: integer, minimum: 0, maximum: 1439 }
+        wake_min: { type: integer, minimum: 0, maximum: 1439 }
+        wind_down_min: { type: integer, minimum: 0, maximum: 120 }
+        alarm_weekdays: { type: array, items: { type: integer, minimum: 1, maximum: 7 } }
+
+    SleepLogInput:
+      type: object
+      required: [bedtime, wake_time]
+      properties:
+        bedtime: { type: string, format: date-time }
+        wake_time: { type: string, format: date-time }
+        restfulness: { type: integer, minimum: 1, maximum: 5, description: The person's own rating }
+
+    SleepSummary:
+      type: object
+      properties:
+        schedule: { $ref: '#/components/schemas/SleepSchedule' }
+        nights_within_30_min: { type: integer }
+        nights_logged: { type: integer }
+
+    Challenge:
+      type: object
+      properties:
+        id: { type: string }
+        title: { type: string }
+        type: { type: string }
+        rules_version: { type: integer }
+        safety_notes: { type: string }
+
+    Dashboard:
+      type: object
+      properties:
+        hydration: { $ref: '#/components/schemas/HydrationSummary' }
+        sleep: { $ref: '#/components/schemas/SleepSummary' }
+        next_actions:
+          type: array
+          items:
+            type: object
+            properties:
+              type: { type: string, enum: [log_drink, wind_down, check_alarm] }
+              label: { type: string }
