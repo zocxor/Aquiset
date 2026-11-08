@@ -81,8 +81,9 @@ class HydrationController extends ChangeNotifier {
 
   /// Short reason shown under the next-nudge time.
   String get nextNudgeReason {
-    if (settings.policy.followsClinicianPlan)
+    if (settings.policy.followsClinicianPlan) {
       return 'Following your clinician\'s plan';
+    }
     if (!settings.policy.enabled) return 'Nudges are off';
     if (snoozed) return 'Snoozed for 30 min';
     final last = lastLog;
@@ -177,8 +178,9 @@ class HydrationController extends ChangeNotifier {
     if (scheduled == null) return;
     final at = DateTime.fromMillisecondsSinceEpoch(scheduled);
     if (at.isAfter(now)) return;
-    if (_sameDate(at, now))
+    if (_sameDate(at, now)) {
       _prefs.setInt(_kSent, (_prefs.getInt(_kSent) ?? 0) + 1);
+    }
     _prefs
       ..setInt(_kLast, scheduled)
       ..remove(_kScheduled);

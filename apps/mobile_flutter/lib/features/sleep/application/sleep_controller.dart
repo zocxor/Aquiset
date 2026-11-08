@@ -16,10 +16,11 @@ class SleepController extends ChangeNotifier {
     this.clock = systemClock,
   }) : _prefs = prefs {
     final raw = _prefs.getString(_kSchedule);
-    if (raw != null)
+    if (raw != null) {
       _schedule = SleepSchedule.fromJson(
         jsonDecode(raw) as Map<String, dynamic>,
       );
+    }
     _alarmOn = _prefs.getBool(_kAlarm) ?? true;
     final logs = _prefs.getString(_kLogs);
     if (logs != null) {

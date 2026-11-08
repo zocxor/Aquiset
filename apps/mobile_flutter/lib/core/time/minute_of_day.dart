@@ -42,8 +42,9 @@ class MinuteOfDay implements Comparable<MinuteOfDay> {
   /// (start == end) contains nothing.
   bool isWithin(MinuteOfDay start, MinuteOfDay end) {
     if (start.value == end.value) return false;
-    if (start.value < end.value)
+    if (start.value < end.value) {
       return value >= start.value && value < end.value;
+    }
     return value >= start.value || value < end.value;
   }
 

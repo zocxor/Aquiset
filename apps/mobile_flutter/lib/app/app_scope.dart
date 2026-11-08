@@ -85,10 +85,11 @@ class AppServices {
     _lifecycle = AppLifecycleListener(
       onResume: () async {
         final added = await hydration.absorbExternalLogs();
-        if (added > 0)
+        if (added > 0) {
           showToast(
             'Added $added ${added == 1 ? 'drink' : 'drinks'} from your widget',
           );
+        }
         await sleep.refreshCapability();
       },
     );

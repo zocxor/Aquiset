@@ -1,5 +1,4 @@
 import 'package:flutter/animation.dart';
-import 'package:flutter/physics.dart';
 
 /// Motion language: springs for anything the user moves, short eased
 /// curves for state changes, nothing that loops except the water surface.

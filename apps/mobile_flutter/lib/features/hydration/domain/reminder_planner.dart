@@ -84,10 +84,12 @@ class ReminderPlanner {
     if (!policy.enabled || policy.followsClinicianPlan) return null;
 
     var candidate = _ceilToMinute(now);
-    if (lastReminderAt != null)
+    if (lastReminderAt != null) {
       candidate = _later(candidate, lastReminderAt.add(policy.interval));
-    if (lastDrinkAt != null)
+    }
+    if (lastDrinkAt != null) {
       candidate = _later(candidate, lastDrinkAt.add(policy.cooldownAfterDrink));
+    }
     if (snoozedUntil != null) candidate = _later(candidate, snoozedUntil);
     candidate = _ceilToMinute(candidate);
 

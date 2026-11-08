@@ -53,8 +53,9 @@ String _restLabel(Duration d) =>
 String weekdaysLabel(Set<int> days) {
   const names = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
   if (days.length == 7) return 'Every day';
-  if (days.length == 5 && days.containsAll(const {1, 2, 3, 4, 5}))
+  if (days.length == 5 && days.containsAll(const {1, 2, 3, 4, 5})) {
     return 'Weekdays';
+  }
   if (days.length == 2 && days.containsAll(const {6, 7})) return 'Weekends';
   if (days.isEmpty) return 'Once';
   return (days.toList()..sort()).map((d) => names[d - 1]).join(', ');
